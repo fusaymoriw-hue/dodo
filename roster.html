@@ -1,27 +1,32 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>レスラー名鑑</title>
-  <style>
-    /* リンク（名前）の文字デザイン */
-    ul a {
-      color: #ffffff;           /* 文字色を明るい「白」にする */
-      text-decoration: none;    /* 下線を消す */
-      font-size: 16px;          /* 文字の大きさ */
-    }
+<style>
+  /* 1. ページ全体の背景色を黒系にする */
+  body {
+    background-color: #222222; /* 暗いグレー（ほぼ黒） */
+    color: #ffffff;           /* 基本の文字色 */
+    font-family: sans-serif;
+  }
 
-    /* マウスを重ねたときの変化 */
-    ul a:hover {
-      color: #38bdf8;           /* ホバー時に明るい水色にする */
-      text-decoration: underline; /* ホバー時に下線を出す */
-    }
+  /* 2. リンク（選手名）のデザイン */
+  ul a {
+    color: #ffffff;           /* 文字色を白にする */
+    text-decoration: none;    /* 下線を消す */
+    font-size: 16px;
+  }
 
-    /* リスト全体の行間を少し広げて見やすくする */
-    ul li {
-      margin-bottom: 8px;
-    }
-  </style>
+  /* 3. マウスを重ねたときの変化 */
+  ul a:hover {
+    color: #38bdf8;           /* 明るい水色に変化 */
+    text-decoration: underline;
+  }
+
+  /* 4. 行間を少し広げる */
+  ul li {
+    margin-bottom: 8px;
+  }
+</style>
 </head>
 <body>
   <h1 style="color: #f59e0b;">🤼 レスラー名鑑</h1>
