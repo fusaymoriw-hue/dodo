@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>選手詳細</title>
+    <style>
+        body { background-color: #222; color: #fff; font-family: sans-serif; }
+        .detail-container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        img { max-width: 300px; display: block; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="detail-container">
+        <!-- ここにJavaScriptでデータが挿入されます -->
+        <h1 id="w-name">読み込み中...</h1>
+        <img id="w-image" src="" alt="立ち絵">
+        
+        <ul>
+            <li>評価: <span id="w-rating"></span></li>
+            <li>HP: <span id="w-hp"></span></li>
+            <li>得意技: <span id="w-skill"></span></li>
+        </ul>
+        
+        <br>
+        <a href="roster.html" style="color: #4da6ff;">▶名鑑へ戻る</a>
+    </div>
+
+    <script>
+        // 1. URLから「?id=〇〇」の数字を取得する
+        const urlParams = new URLSearchParams(window.location.search);
+        const wrestlerId = urlParams.get('id');
+
+        // 2. 選手データ（前回抽出したデータの一部です。全員分をここに入れます）
+        const rosterData = [
+  { id: 1, name: "青葉みずき", rating: 1036, hp: 320, skill: "投げ", img: "images/1.png" },
+  { id: 2, name: "稲光さやか", rating: 1240, hp: 290, skill: "極め", img: "images/2.png" },
+  { id: 3, name: "胡蝶", rating: 1042, hp: 310, skill: "飛び", img: "images/3.png" },
+  { id: 4, name: "サンディ・ショア", rating: 823, hp: 220, skill: "飛び", img: "images/4.png" },
+  { id: 5, name: "ルシア・オルテガ", rating: 740, hp: 200, skill: "飛び", img: "images/5.png" },
+  { id: 6, name: "ニーナ・ヴォルコフ", rating: 870, hp: 310, skill: "投げ", img: "images/6.png" },
+  { id: 7, name: "オリビア・クラーク", rating: 920, hp: 310, skill: "投げ", img: "images/7.png" },
+  { id: 8, name: "月読かなで", rating: 1088, hp: 440, skill: "パワー", img: "images/8.png" },
+  { id: 9, name: "川瀬しずく", rating: 1006, hp: 400, skill: "パワー", img: "images/9.png" },
+  { id: 10, name: "魔女ミサキ", rating: 1052, hp: 270, skill: "投げ", img: "images/10.png" },
+  { id: 11, name: "ブルック・ヘイズ", rating: 826, hp: 250, skill: "極め", img: "images/11.png" },
+  { id: 12, name: "白妙ことね", rating: 1036, hp: 300, skill: "打撃", img: "images/12.png" },
+  { id: 13, name: "豆原りん", rating: 842, hp: 200, skill: "飛び", img: "images/13.png" },
+  { id: 14, name: "ヴァイオレット・ムーア", rating: 860, hp: 230, skill: "投げ", img: "images/14.png" },
+  { id: 15, name: "ロージー・クイン", rating: 610, hp: 140, skill: "打撃", img: "images/15.png" },
+  { id: 16, name: "鬼姫あさひ", rating: 1008, hp: 400, skill: "パワー", img: "images/16.png" },
+  { id: 17, name: "天宮しずえ", rating: 1104, hp: 490, skill: "パワー", img: "images/17.png" },
+  { id: 18, name: "川奈ひなた", rating: 1004, hp: 270, skill: "極め", img: "images/18.png" },
+  { id: 19, name: "朱雀りんね", rating: 1046, hp: 350, skill: "投げ", img: "images/19.png" },
+  { id: 20, name: "城戸さな", rating: 1200, hp: 250, skill: "打撃", img: "images/20.png" },
+  { id: 21, name: "桃井レイファ", rating: 1013, hp: 210, skill: "打撃", img: "images/21.png" },
+  { id: 22, name: "潮崎なな", rating: 1150, hp: 270, skill: "飛び", img: "images/22.png" },
+  { id: 23, name: "狼神あそぎ", rating: 1040, hp: 430, skill: "パワー", img: "images/23.png" },
+  { id: 24, name: "キャロライン・ベルク", rating: 830, hp: 250, skill: "打撃", img: "images/24.png" },
+  { id: 25, name: "幸村さち", rating: 968, hp: 300, skill: "打撃", img: "images/25.png" },
+  { id: 26, name: "仮面クシナ", rating: 1151, hp: 300, skill: "極め", img: "images/26.png" },
+  { id: 27, name: "葉山りお", rating: 1042, hp: 320, skill: "飛び", img: "images/27.png" },
+  { id: 28, name: "ラブリー玉井", rating: 956, hp: 310, skill: "投げ", img: "images/28.png" },
+  { id: 29, name: "焔島れい", rating: 1110, hp: 350, skill: "パワー", img: "images/29.png" },
+  { id: 30, name: "剣崎みこ", rating: 1074, hp: 330, skill: "投げ", img: "images/30.png" },
+  { id: 31, name: "大木ゆりあ", rating: 1036, hp: 400, skill: "パワー", img: "images/31.png" },
+  { id: 32, name: "アレクシア・スターク", rating: 1323, hp: 500, skill: "パワー", img: "images/32.png" },
+  { id: 33, name: "虎縞やまと", rating: 1002, hp: 390, skill: "パワー", img: "images/33.png" },
+  { id: 34, name: "黒薔薇アミィ", rating: 995, hp: 250, skill: "極め", img: "images/34.png" },
+  { id: 35, name: "グレイス・リン", rating: 756, hp: 230, skill: "打撃", img: "images/35.png" },
+  { id: 36, name: "黄金の狼", rating: 876, hp: 250, skill: "極め", img: "images/36.png" },
+  { id: 37, name: "縞野さとみ", rating: 1051, hp: 420, skill: "パワー", img: "images/37.png" },
+  { id: 38, name: "零崎こと", rating: 1140, hp: 350, skill: "打撃", img: "images/38.png" },
+  { id: 39, name: "川原しほ", rating: 956, hp: 310, skill: "飛び", img: "images/39.png" },
+  { id: 40, name: "ホーク・エイム", rating: 1050, hp: 410, skill: "投げ", img: "images/40.png" },
+  { id: 41, name: "森下まこと", rating: 980, hp: 320, skill: "打撃", img: "images/41.png" },
+  { id: 42, name: "帯刀しょうこ", rating: 951, hp: 320, skill: "打撃", img: "images/42.png" },
+  { id: 43, name: "羽山すずね", rating: 956, hp: 210, skill: "打撃", img: "images/43.png" },
+  { id: 44, name: "ヴェールK", rating: 1019, hp: 270, skill: "極め", img: "images/44.png" },
+  { id: 45, name: "夢魔まな", rating: 952, hp: 240, skill: "飛び", img: "images/45.png" },
+  { id: 46, name: "桜庭ちさと", rating: 1108, hp: 340, skill: "打撃", img: "images/46.png" },
+  { id: 47, name: "真紅みゆき", rating: 1000, hp: 360, skill: "打撃", img: "images/47.png" },
+  { id: 48, name: "スターズ・ユニオン", rating: 793, hp: 300, skill: "パワー", img: "images/48.png" },
+  { id: 49, name: "光崎ひかる", rating: 1200, hp: 290, skill: "投げ", img: "images/49.png" },
+  { id: 50, name: "雷鳴たつこ", rating: 1151, hp: 460, skill: "パワー", img: "images/50.png" },
+  { id: 51, name: "メーガン・ダレル", rating: 590, hp: 210, skill: "投げ", img: "images/51.png" },
+  { id: 52, name: "ベラ・タイタン", rating: 1180, hp: 410, skill: "投げ", img: "images/52.png" },
+  { id: 53, name: "レオナ堂島", rating: 1052, hp: 320, skill: "打撃", img: "images/53.png" },
+  { id: 54, name: "柴崎みき", rating: 1120, hp: 250, skill: "打撃", img: "images/54.png" },
+  { id: 55, name: "ジャクリーン・ノヴァ", rating: 1106, hp: 380, skill: "パワー", img: "images/55.png" },
+  { id: 56, name: "ジュリー・カーター", rating: 860, hp: 200, skill: "飛び", img: "images/56.png" },
+  { id: 57, name: "トランプレディ", rating: 1056, hp: 280, skill: "飛び", img: "images/57.png" },
+  { id: 58, name: "ケリー・ペイジ", rating: 676, hp: 250, skill: "投げ", img: "images/58.png" },
+  { id: 59, name: "白銀の狼", rating: 816, hp: 330, skill: "パワー", img: "images/59.png" },
+  { id: 60, name: "リン・チョウ", rating: 820, hp: 240, skill: "打撃", img: "images/60.png" },
+  { id: 61, name: "堀内みづき", rating: 1022, hp: 210, skill: "極め", img: "images/61.png" },
+  { id: 62, name: "音速ネコ", rating: 1117, hp: 330, skill: "飛び", img: "images/62.png" },
+  { id: 63, name: "シエラ・ベレス", rating: 986, hp: 360, skill: "パワー", img: "images/63.png" },
+  { id: 64, name: "クララ・ナイト", rating: 540, hp: 160, skill: "極め", img: "images/64.png" },
+  { id: 65, name: "黒星カオス", rating: 1360, hp: 530, skill: "パワー", img: "images/65.png" },
+  { id: 66, name: "カルラ・フローレス", rating: 646, hp: 260, skill: "パワー", img: "images/66.png" },
+  { id: 67, name: "スパーク・リンガ", rating: 833, hp: 330, skill: "パワー", img: "images/67.png" },
+  { id: 68, name: "若葉みずほ", rating: 1190, hp: 290, skill: "飛び", img: "images/68.png" },
+  { id: 69, name: "伊吹はるか", rating: 1103, hp: 360, skill: "打撃", img: "images/69.png" },
+  { id: 70, name: "カラス天", rating: 1153, hp: 320, skill: "飛び", img: "images/70.png" },
+  { id: 71, name: "小路かすみ", rating: 970, hp: 270, skill: "投げ", img: "images/71.png" },
+  { id: 72, name: "セレナ・ライル", rating: 1094, hp: 290, skill: "飛び", img: "images/72.png" },
+  { id: 73, name: "デイジー・クロウ", rating: 1066, hp: 280, skill: "打撃", img: "images/73.png" },
+  { id: 74, name: "リブレ・ソル", rating: 790, hp: 240, skill: "飛び", img: "images/74.png" },
+  { id: 75, name: "猫田テディ", rating: 1013, hp: 290, skill: "投げ", img: "images/75.png" },
+  { id: 76, name: "沢村レイカ", rating: 984, hp: 210, skill: "極め", img: "images/76.png" },
+  { id: 77, name: "海豚はやて", rating: 1023, hp: 300, skill: "打撃", img: "images/77.png" },
+  { id: 78, name: "緑川りな", rating: 1020, hp: 330, skill: "パワー", img: "images/78.png" },
+  { id: 79, name: "狐森まい", rating: 1112, hp: 260, skill: "投げ", img: "images/79.png" },
+  { id: 80, name: "白百合じゅん", rating: 1007, hp: 360, skill: "投げ", img: "images/80.png" },
+  { id: 81, name: "蒼森あず", rating: 1042, hp: 330, skill: "極め", img: "images/81.png" },
+  { id: 82, name: "ナデジダ・ユン", rating: 1183, hp: 320, skill: "極め", img: "images/82.png" },
+  { id: 83, name: "瀬名ゆい", rating: 1034, hp: 290, skill: "極め", img: "images/83.png" },
+  { id: 84, name: "聖夜ノワール", rating: 1046, hp: 420, skill: "パワー", img: "images/84.png" },
+  { id: 85, name: "羽村つぐみ", rating: 932, hp: 230, skill: "飛び", img: "images/85.png" },
+  { id: 86, name: "ベアトリス・コルテス", rating: 970, hp: 240, skill: "打撃", img: "images/86.png" },
+  { id: 87, name: "ウサギ爆弾", rating: 826, hp: 270, skill: "飛び", img: "images/87.png" },
+  { id: 88, name: "豹堂りさ", rating: 1118, hp: 360, skill: "投げ", img: "images/88.png" },
+  { id: 89, name: "霜月むらさき", rating: 1114, hp: 270, skill: "極め", img: "images/89.png" },
+  { id: 90, name: "艶ヶ谷ビューティ", rating: 1127, hp: 410, skill: "パワー", img: "images/90.png" },
+  { id: 91, name: "幻影薔薇・紅", rating: 803, hp: 250, skill: "飛び", img: "images/91.png" },
+  { id: 92, name: "幻影薔薇・黄", rating: 743, hp: 300, skill: "パワー", img: "images/92.png" },
+  { id: 93, name: "狐尾まほ", rating: 989, hp: 370, skill: "パワー", img: "images/93.png" },
+  { id: 94, name: "和泉ひとみ", rating: 980, hp: 270, skill: "飛び", img: "images/94.png" },
+  { id: 95, name: "藤堂かずみ", rating: 1038, hp: 350, skill: "投げ", img: "images/95.png" },
+  { id: 96, name: "メイリン・ツァオ", rating: 1053, hp: 300, skill: "打撃", img: "images/96.png" },
+  { id: 97, name: "刃神はやぶさ", rating: 1089, hp: 240, skill: "飛び", img: "images/97.png" },
+  { id: 98, name: "北風のスカジ", rating: 1075, hp: 310, skill: "極め", img: "images/98.png" },
+  { id: 99, name: "イングリッド・ホルム", rating: 910, hp: 280, skill: "投げ", img: "images/99.png" },
+  { id: 100, name: "編み込みユウ", rating: 998, hp: 360, skill: "極め", img: "images/100.png" },
+  { id: 101, name: "夜空ちよ", rating: 886, hp: 330, skill: "極め", img: "images/101.png" },
+  { id: 102, name: "爆弾くる", rating: 1064, hp: 410, skill: "パワー", img: "images/102.png" },
+  { id: 103, name: "強力ゆうこ", rating: 1165, hp: 350, skill: "飛び", img: "images/103.png" },
+  { id: 104, name: "真昼なつき", rating: 960, hp: 270, skill: "打撃", img: "images/104.png" },
+  { id: 105, name: "マスクド・カスミ", rating: 616, hp: 190, skill: "投げ", img: "images/105.png" },
+  { id: 106, name: "火炎マキ", rating: 1061, hp: 420, skill: "投げ", img: "images/106.png" },
+  { id: 107, name: "舞台のマユ", rating: 1150, hp: 240, skill: "打撃", img: "images/107.png" },
+  { id: 108, name: "ヘレナ・グレイ", rating: 826, hp: 270, skill: "極め", img: "images/108.png" },
+  { id: 109, name: "仮面令嬢", rating: 940, hp: 210, skill: "打撃", img: "images/109.png" },
+  { id: 110, name: "滝川みほ", rating: 1046, hp: 310, skill: "飛び", img: "images/110.png" },
+  { id: 111, name: "北村としみ", rating: 1118, hp: 300, skill: "極め", img: "images/111.png" },
+  { id: 112, name: "原田ミミ", rating: 1088, hp: 330, skill: "極め", img: "images/112.png" },
+  { id: 113, name: "カミラ・ソアレス", rating: 743, hp: 270, skill: "打撃", img: "images/113.png" },
+  { id: 114, name: "緑野はつ", rating: 1060, hp: 330, skill: "極め", img: "images/114.png" },
+  { id: 115, name: "紅リボンの恵", rating: 1166, hp: 320, skill: "飛び", img: "images/115.png" },
+  { id: 116, name: "双川あき", rating: 994, hp: 320, skill: "投げ", img: "images/116.png" },
+  { id: 117, name: "双川はる", rating: 984, hp: 380, skill: "打撃", img: "images/117.png" },
+  { id: 118, name: "給仕ざくら", rating: 1043, hp: 240, skill: "極め", img: "images/118.png" },
+  { id: 119, name: "小唄はと", rating: 1061, hp: 250, skill: "飛び", img: "images/119.png" },
+  { id: 120, name: "白波アリサ", rating: 1074, hp: 380, skill: "パワー", img: "images/120.png" },
+  { id: 121, name: "剣ヶ崎みふゆ", rating: 1088, hp: 350, skill: "打撃", img: "images/121.png" },
+  { id: 122, name: "八重しずか", rating: 1022, hp: 420, skill: "パワー", img: "images/122.png" },
+  { id: 123, name: "応援ゆか", rating: 1240, hp: 280, skill: "飛び", img: "images/123.png" },
+  { id: 124, name: "セーラーちぐさ", rating: 1136, hp: 360, skill: "投げ", img: "images/124.png" },
+  { id: 125, name: "チャン・メイリン", rating: 656, hp: 210, skill: "打撃", img: "images/125.png" },
+  { id: 126, name: "隻眼ライ", rating: 1023, hp: 410, skill: "パワー", img: "images/126.png" },
+  { id: 127, name: "内海らき", rating: 1051, hp: 240, skill: "極め", img: "images/127.png" },
+  { id: 128, name: "忍リカ", rating: 1018, hp: 300, skill: "飛び", img: "images/128.png" },
+  { id: 129, name: "リリー・ショット", rating: 1170, hp: 470, skill: "投げ", img: "images/129.png" },
+  { id: 130, name: "レディ・ヴァイオレ", rating: 1186, hp: 440, skill: "パワー", img: "images/130.png" },
+  { id: 131, name: "ダフネ・デュラン", rating: 1150, hp: 440, skill: "パワー", img: "images/131.png" },
+  { id: 132, name: "ローザ・ヒース", rating: 1176, hp: 380, skill: "パワー", img: "images/132.png" },
+  { id: 133, name: "王冠ほのか", rating: 1052, hp: 420, skill: "パワー", img: "images/133.png" },
+  { id: 134, name: "アン・フェイ", rating: 653, hp: 230, skill: "投げ", img: "images/134.png" },
+  { id: 135, name: "花田とも", rating: 971, hp: 220, skill: "極め", img: "images/135.png" }
+];
+
+        // 3. IDが一致する選手を探す
+        const wrestler = rosterData.find(w => w.id == wrestlerId);
+
+        // 4. HTMLの各要素にデータをセットする
+        if (wrestler) {
+            document.getElementById('w-name').textContent = wrestler.name;
+            document.getElementById('w-rating').textContent = wrestler.rating;
+            document.getElementById('w-hp').textContent = wrestler.hp;
+            document.getElementById('w-skill').textContent = wrestler.skill;
+            document.getElementById('w-image').src = wrestler.img;
+        } else {
+            document.getElementById('w-name').textContent = "選手データが見つかりません";
+        }
+    </script>
+</body>
+</html>
