@@ -2,16 +2,332 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>遊び方・マニュアル - YOMIAI RING WOMAN</title>
-    <style>body { font-family: sans-serif; padding: 30px; background: #222; color: #fff; line-height: 1.6; max-width: 800px; margin: auto; }</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>遊び方・マニュアル - YOMIAI RING</title>
+    <style>
+        :root {
+            --bg-color: #12131c;
+            --card-bg: #1e1f2e;
+            --accent-green: #10b981;
+            --accent-pink: #ff4f8b;
+            --accent-blue: #60a5fa;
+            --accent-purple: #a78bfa;
+            --text-main: #f3f4f6;
+            --text-sub: #9ca3af;
+            --border-color: #374151;
+            --link-color: #a5b4fc;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            padding: 30px 20px;
+            background: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.7;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .header-nav {
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+
+        h1 {
+            color: var(--accent-green);
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subtitle {
+            color: var(--text-sub);
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+
+        /* 目次エリア */
+        .toc {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-green);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+        .toc h3 {
+            margin-top: 0;
+            color: var(--accent-green);
+            font-size: 1.1rem;
+        }
+        .toc ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .toc li {
+            margin-bottom: 6px;
+        }
+
+        /* セクション */
+        h2 {
+            color: var(--accent-pink);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-top: 40px;
+            font-size: 1.4rem;
+        }
+
+        h3 {
+            color: var(--accent-blue);
+            margin-top: 25px;
+            font-size: 1.15rem;
+        }
+
+        p, li {
+            color: #d1d5db;
+        }
+
+        /* カード・枠線デザイン */
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 18px 22px;
+            margin-bottom: 18px;
+        }
+        .feature-card h4 {
+            margin: 0 0 8px 0;
+            color: #fff;
+            font-size: 1.05rem;
+        }
+
+        /* テーブル */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+            font-size: 0.95rem;
+        }
+        th {
+            background: #2a2b3d;
+            color: var(--accent-green);
+        }
+
+        /* 強調タグ */
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-right: 6px;
+        }
+        .badge-danger { background: #ef4444; color: #fff; }
+        .badge-warning { background: #f59e0b; color: #fff; }
+        .badge-info { background: #3b82f6; color: #fff; }
+
+        /* ヒントボックス */
+        .tip-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid var(--accent-green);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 20px 0;
+        }
+        .tip-box h4 {
+            margin: 0 0 8px 0;
+            color: var(--accent-green);
+        }
+
+        footer {
+            margin-top: 60px;
+            text-align: center;
+            color: var(--text-sub);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1 style="color: #10b981;">📖 ゲームマニュアル</h1>
-    <p><a href="index.html" style="color: #a5b4fc;">▶ トップページへ戻る</a></p>
-    
-    <h2 style="color: #ff4f8b; border-bottom: 1px solid #555;">ゲームの流れ</h2>
-    <p>1. 選手をスカウトして契約し、6人集めて団体を旗揚げします。<br>
-    2. 練習で能力を伸ばし、月1回の興行を開催して資金（AP）を稼ぎます。<br>
-    3. 疲労度（50以上で6%、70以上で25%）に応じて負傷リスクが高まるため、適度に休ませるマネジメントが必要です。</p>
+
+    <div class="header-nav">
+        <a href="index.html">▶ トップページへ戻る</a>
+    </div>
+
+    <h1>📖 公式ゲームマニュアル</h1>
+    <p class="subtitle">女子プロレス団体経営＆3Dカード読み合いシミュレーション『読み合いリング』</p>
+
+    <!-- 目次 -->
+    <div class="toc">
+        <h3>目次</h3>
+        <ul>
+            <li><a href="#overview">1. ゲーム概要と1か月の流れ</a></li>
+            <li><a href="#screens">2. 主要画面と経営システム（7機能）</a></li>
+            <li><a href="#battle">3. 3Dカードバトル「ReadRule01」の仕組み</a></li>
+            <li><a href="#show">4. 興行（興行編成）と収益ルール</a></li>
+            <li><a href="#tips">5. 初心者向け攻略のコツ</a></li>
+        </ul>
+    </div>
+
+    <!-- 1. ゲーム概要 -->
+    <h2 id="overview">1. ゲーム概要と1か月の流れ</h2>
+    <p>
+        あなたは女子プロレス新団体のオーナーです。選手をスカウト・育成し、月1回の興行を開催して団体規模を大きくていきます。国内外のライバル13団体と競い合いながら、女子プロレス界の頂点を目指しましょう！
+    </p>
+
+    <div class="tip-box">
+        <h4>📅 基本の1か月サイクル</h4>
+        <ol style="margin-bottom:0; padding-left:20px;">
+            <li><strong>練習指示・コンディション管理（ジム）</strong>：週4回の練習で能力育成と休養管理。</li>
+            <li><strong>補強・スカウト（選手を探す）</strong>：新人テストや遠征で新たな選手を発掘。</li>
+            <li><strong>興行の開催（興行編成）</strong>：所属選手6名以上で解放！会場を選び対戦カードを編成。</li>
+            <li><strong>月末精算（収支確定）</strong>：人件費・固定費の支払いと歴史の更新。</li>
+        </ol>
+    </div>
+
+    <!-- 2. 主要画面と経営システム -->
+    <h2 id="screens">2. 主要画面と経営システム（7機能）</h2>
+
+    <div class="feature-card">
+        <h4>🏠 事務所ロビー (`lobby`)</h4>
+        <p>所属選手たちが日常（Daily Life）を過ごす3D空間です。所属人数に応じてロッカーや休憩スペース、練習マット等へ自動分配され、会話や生活の様子を楽しむことができます。</p>
+    </div>
+
+    <div class="feature-card">
+        <h4>🏛 団体・創設史 (`office`)</h4>
+        <p>団体名や本拠地（東京・大阪・名古屋・福岡等）の確認・変更が行えます。毎月の固定費（人件費・事務所維持費・借金利息）の確認や、旗揚げ当時の創設1期生（最初の6名）の記録を閲覧できます。</p>
+    </div>
+
+    <div class="feature-card">
+        <h4>🔍 選手を探す (`recruit`)</h4>
+        <p>新しい選手をスカウトして契約します。</p>
+        <ul>
+            <li><strong>新人テスト（30万円）</strong>：確実に選手を採用できます。</li>
+            <li><strong>スカウト遠征（25万円）</strong>：国内6地区×3目的から選択し、埋もれた人材を探します。</li>
+            <li><strong>交渉デスク</strong>：発見した候補の保持・正式契約交渉・ゲスト参戦打診が行えます。</li>
+        </ul>
+    </div>
+
+    <div class="feature-card">
+        <h4>🏋️ ジム・練習 (`gym`)</h4>
+        <p>月間4枠のトレーニングを選択して選手を強化します。技（5系統）や基礎パラメータ（力・速・体・技・心）を伸ばせるほか、出稼ぎによる資金獲得や休暇も指示できます。</p>
+        <p><span class="badge badge-warning">注意</span> モラル値（0〜100）やストレス・疲労度が蓄積すると退団リスクや負傷が発生します。</p>
+    </div>
+
+    <div class="feature-card">
+        <h4>🎪 興行編成 (`show`)</h4>
+        <p><strong>所属選手が6名以上</strong>揃うと解禁されます。開催日数（1〜8日）・会場（特設リング〜ドームクラス）を選択し、対戦カードを組みます。メインイベントは3Dで観戦・直接操作が可能です！</p>
+    </div>
+
+    <div class="feature-card">
+        <h4>🌐 他団体・海外 (`world`)</h4>
+        <p>国内外13団体（新星女子、VORTEX、CLL、APEX等）の動向を確認できます。選手の加齢・成長・衰え・引退・二代目襲名、団体の新設・崩壊・引き抜きなどがシミュレートされています。</p>
+    </div>
+
+    <div class="feature-card">
+        <h4>📜 記録・引き継ぎ (`history`)</h4>
+        <p>月別損益計算書（Ledger）や過去の歴史ログを確認できます。セーブデータ（JSON）の書き出し・読み込みや、名勝負の3D試合リプレイ再生が可能です。</p>
+    </div>
+
+    <!-- 3. 3Dカードバトル -->
+    <h2 id="battle">3. 3Dカードバトル「ReadRule01」の仕組み</h2>
+    <p>興行のメインイベントでは、カード選択による戦略的な3Dバトルが展開されます。</p>
+
+    <h3>⚔️ 5系統の相性（五すくみ）</h3>
+    <p>手札のカード（技系統）を選び、相手の出す技を読み切ることで大ダメージや有利な展開を作ることができます。</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>系統</th>
+                <th>強み（有利な相手）</th>
+                <th>特徴</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>投げ（Throw）</strong></td>
+                <td>打撃に強い</td>
+                <td>強力な投げ技。相手の打ち合いを制する。</td>
+            </tr>
+            <tr>
+                <td><strong>極め（Hold）</strong></td>
+                <td>投げに強い</td>
+                <td>関節技・サブミッション。ギブアップを狙いやすい。</td>
+            </tr>
+            <tr>
+                <td><strong>パワー（Power）</strong></td>
+                <td>極めに強い</td>
+                <td>圧倒的な力で関節技を解除・粉砕する。</td>
+            </tr>
+            <tr>
+                <td><strong>打撃（Strike）</strong></td>
+                <td>パワーに強い</td>
+                <td>スピードと打撃連打でパワー技の出端をくじく。</td>
+            </tr>
+            <tr>
+                <td><strong>飛び（Fly）</strong></td>
+                <td>特定のスキを突く</td>
+                <td>ハイリスク・ハイリターンの空中元祖技。</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>🔥 特殊攻防ルール</h3>
+    <ul>
+        <li><strong>必殺技カード</strong>：ゲージ消費や特定の好機で使用可能。一発逆転の威力を誇ります。</li>
+        <li><strong>凶器・反則攻撃</strong>：毒霧、チェーン、椅子攻撃など。威力を増しますが反則カウントに注意が必要です。</li>
+        <li><strong>場外戦</strong>：リング外に落とすとカウント20がスタート。鉄柵攻撃や場外ダイブを狙えます。</li>
+        <li><strong>タッグマッチ</strong>：パートナーのカットプレイ（カット阻止）や、合体技（ツープラトン・ドゥームズデイ等）が発動可能です。</li>
+    </ul>
+
+    <!-- 4. 興行経営と勝ち筋 -->
+    <h2 id="show">4. 興行経営と勝ち筋</h2>
+
+    <h3>🏟 会場選びと動員数</h3>
+    <p>団体の人気や話題性に応じて適切な会場を選択することが重要です。身の丈に合わない大アリーナは赤字の原因になります。</p>
+
+    <h3>⚠️ 疲労と負傷リスク</h3>
+    <p>選手の疲労度が高まると、試合中・練習中に負傷する確率が跳ね上がります。</p>
+    <ul>
+        <li><span class="badge badge-info">疲労 50以上</span> 負傷リスク：<strong>約 6%</strong>（注意が必要）</li>
+        <li><span class="badge badge-danger">疲労 70以上</span> 負傷リスク：<strong>約 25%</strong>（非常に危険！休ませましょう）</li>
+    </ul>
+
+    <!-- 5. 初心者向け攻略のコツ -->
+    <h2 id="tips">5. 初心者向け攻略のコツ</h2>
+    <div class="tip-box">
+        <h4>💡 序盤の破産を防ぐコツ</h4>
+        <ol>
+            <li><strong>まずは6人集める</strong>：スカウト（新人テスト等）を活用し、早急に6名揃えて「興行」を解放しましょう。</li>
+            <li><strong>資金（AP）が尽きそうな時は「出稼ぎ」</strong>：ジムの練習メニュー「出稼ぎ」で即座に資金を補填できます。</li>
+            <li><strong>小規模会場からスタート</strong>：旗揚げ当初は小さな特設リングや市民体育館などで着実に収益を上げましょう。</li>
+            <li><strong>休養も仕事のうち</strong>：疲労70以上の選手は積極的に「休暇」を取らせ、長期離脱（ケガ）を防ぎましょう。</li>
+        </ol>
+    </div>
+
+    <footer>
+        &copy; YOMIAI RING WOMAN - 3D Card Battle & Management Simulation
+    </footer>
+
 </body>
 </html>
