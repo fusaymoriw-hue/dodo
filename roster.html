@@ -1,136 +1,121 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="女子プロレスシミュレーターのゲーム内レスラー135名を、番号と名前で一覧できる名鑑。名前・番号で検索できます。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="レスラー名鑑 | 女子プロレスシミュレーター">
+<meta property="og:description" content="ゲーム内に登場するレスラー135名の名前一覧。番号・名前から探せるシンプルな名鑑。">
+<title>所属レスラー名鑑・名前一覧 | 女子プロレスシミュレーター</title>
 <style>
-  /* 1. ページ全体の背景色を黒系にする */
-  body {
-    background-color: #222222; /* 暗いグレー（ほぼ黒） */
-    color: #ffffff;           /* 基本の文字色 */
-    font-family: sans-serif;
-  }
-
-  /* 2. リンク（選手名）のデザイン */
-  ul a {
-    color: #ffffff;           /* 文字色を白にする */
-    text-decoration: none;    /* 下線を消す */
-    font-size: 16px;
-  }
-
-  /* 3. マウスを重ねたときの変化 */
-  ul a:hover {
-    color: #38bdf8;           /* 明るい水色に変化 */
-    text-decoration: underline;
-  }
-
-  /* 4. 行間を少し広げる */
-  ul li {
-    margin-bottom: 8px;
-  }
+:root{--bg:#101015;--panel:#1b1c24;--panel2:#22232d;--line:#383846;--text:#f3f0f3;--muted:#b4b2c0;--pink:#f45b91;--pink2:#ff9bb8;--gold:#eec982;--max:980px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;line-height:1.8;overflow-wrap:anywhere}
+body::before{content:"";position:absolute;inset:0 0 auto;height:540px;background:radial-gradient(ellipse at 63% 0%,rgba(217,63,109,.18),transparent 66%),linear-gradient(180deg,#231524 0,#101015 100%);z-index:-1;pointer-events:none}
+a{color:var(--pink2);text-underline-offset:3px}a:hover{color:#fff}a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.wrap{width:min(var(--max),calc(100% - 38px));margin-inline:auto}
+.topbar{background:rgba(16,16,21,.78);border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(10px)}
+.topbar .wrap{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{color:#fff;text-decoration:none;letter-spacing:.04em;font-weight:900;font-size:1rem}.brand span{color:var(--pink)}
+.nav{display:flex;gap:15px;flex-wrap:wrap}.nav a{font-size:.85rem;text-decoration:none;color:#d7d2de}.nav a:hover{color:var(--pink2)}
+.hero{padding:66px 0 32px}.eyebrow{display:inline-flex;align-items:center;gap:10px;color:var(--pink2);font-size:.75rem;letter-spacing:.15em;font-weight:900}.eyebrow::before{content:"";width:26px;height:2px;background:var(--pink)}
+h1{font-size:clamp(2rem,5vw,3rem);font-weight:900;letter-spacing:.025em;line-height:1.4;margin:18px 0 12px}h1 span{color:var(--pink)}
+.lede{margin:0 0 24px;color:#d4cfda;max-width:760px;font-size:1rem}
+.overview{display:flex;gap:11px;flex-wrap:wrap;align-items:center;margin:20px 0 26px}.total{background:#292333;border:1px solid #6b4659;border-radius:11px;padding:12px 19px}.total span{color:#d7ced8;font-size:.78rem;display:block}.total strong{font-size:1.75rem;line-height:1.3;color:#fff}.note{color:var(--muted);font-size:.83rem}
+.tools{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:20px;margin:8px 0 26px}.tools label{display:block;color:#ded7e1;font-size:.84rem;font-weight:800;margin-bottom:8px}
+.search-wrap{position:relative}.search-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--pink2);font-size:1.05rem;pointer-events:none}
+input[type=search]{display:block;width:100%;border-radius:9px;padding:14px 96px 14px 43px;min-height:50px;border:1px solid #6a5263;background:#141720;color:#fff;font-size:1rem;font-family:inherit;appearance:none}
+input::placeholder{color:#908b99}.clear{position:absolute;right:7px;top:50%;transform:translateY(-50%);border:0;border-radius:7px;padding:7px 12px;background:#30303c;color:#fff;cursor:pointer;font-size:.78rem}.clear:hover{background:#484452}
+.ranges{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.range-btn{border:1px solid #4d4555;background:var(--panel2);border-radius:999px;color:#d8d3de;padding:7px 13px;cursor:pointer;font-size:.79rem;font-weight:700;font-family:inherit;min-height:36px}.range-btn:hover{border-color:var(--pink2)}.range-btn.active{background:#593044;color:#ffe1ed;border-color:#e8789e}
+.resultbar{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#cbc5d0;font-size:.88rem;margin-bottom:17px}.resultbar strong{color:var(--pink2);font-variant-numeric:tabular-nums}.resultbar a{font-size:.79rem}
+.group{margin:0 0 28px;scroll-margin-top:20px;background:linear-gradient(140deg,rgba(244,91,145,.055),transparent 30%),var(--panel);border:1px solid var(--line);border-radius:15px;padding:21px}.group[hidden],.person[hidden]{display:none!important}
+.group-title{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);margin-bottom:15px;padding-bottom:11px}.group-title h2{margin:0;color:#fff;font-size:1.07rem;letter-spacing:.055em;font-variant-numeric:tabular-nums}.dash{color:var(--pink)}.group-count{font-size:.8rem;color:var(--muted)}
+.people{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;list-style:none;margin:0;padding:0}.person{display:flex;align-items:center;gap:12px;background:var(--panel2);border:1px solid #3b3847;border-radius:9px;padding:12px 13px;min-width:0;min-height:54px}.person-id{font-size:.78rem;line-height:1.5;color:var(--pink2);font-weight:850;font-variant-numeric:tabular-nums;flex:0 0 31px}.person-name{font-size:.92rem;font-weight:740;line-height:1.5;color:#f5f0f5;min-width:0}
+.empty{background:var(--panel);border:1px dashed #76546b;border-radius:12px;text-align:center;padding:34px 20px;color:#d6ced8}.empty[hidden]{display:none!important}
+.footcta{background:linear-gradient(115deg,#25202c,#201c23);border:1px solid #564655;border-radius:14px;padding:23px;margin:32px 0 55px;display:flex;align-items:center;justify-content:space-between;gap:15px}.footcta p{margin:0;font-size:.88rem;color:#d2c9d2}.footcta strong{display:block;color:#fff;font-size:1.08rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:9px 17px;border-radius:9px;background:var(--pink);color:#161016;font-weight:850;font-size:.85rem;text-decoration:none;white-space:nowrap}.btn:hover{background:#ff85a8;color:#161016}.footer{border-top:1px solid var(--line);padding:23px 0 40px;text-align:center;font-size:.8rem;color:#9a96a3}
+@media(max-width:800px){.people{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.wrap{width:calc(100% - 26px)}.topbar .wrap{min-height:60px}.nav{gap:12px}.nav a{font-size:.75rem}.hero{padding:40px 0 24px}.tools,.group{padding:15px}.people{grid-template-columns:1fr;gap:8px}.person{min-height:50px}.footcta{flex-direction:column;align-items:stretch}.btn{width:100%}.resultbar{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
-  <h1 style="color: #f59e0b;">🤼 レスラー名鑑</h1>
-  <p><a href="index.html" style="color: #a5b4fc;">▶ トップページへ戻る</a></p>
-
-  <h2 style="color: #ff4f8b; border-bottom: 1px solid #555;">注目の選手・技</h2>
-      <ul>
-  <li><a href="detail.html?id=1">青葉みずき</a></li>
-  <li><a href="detail.html?id=2">稲光さやか</a></li>
-  <li><a href="detail.html?id=3">胡蝶</a></li>
-  <li><a href="detail.html?id=4">サンディ・ショア</a></li>
-  <li><a href="detail.html?id=5">ルシア・オルテガ</a></li>
-  <li><a href="detail.html?id=6">ニーナ・ヴォルコフ</a></li>
-  <li><a href="detail.html?id=7">オリビア・クラーク</a></li>
-  <li><a href="detail.html?id=8">月読かなで</a></li>
-  <li><a href="detail.html?id=9">川瀬しずく</a></li>
-  <li><a href="detail.html?id=10">魔女ミサキ</a></li>
-  <li><a href="detail.html?id=11">ブルック・ヘイズ</a></li>
-  <li><a href="detail.html?id=12">白妙ことね</a></li>
-  <li><a href="detail.html?id=13">豆原りん</a></li>
-  <li><a href="detail.html?id=14">ヴァイオレット・ムーア</a></li>
-  <li><a href="detail.html?id=15">ロージー・クイン</a></li>
-  <li><a href="detail.html?id=16">鬼姫あさひ</a></li>
-  <li><a href="detail.html?id=17">天宮しずえ</a></li>
-  <li><a href="detail.html?id=18">川奈ひなた</a></li>
-  <li><a href="detail.html?id=19">朱雀りんね</a></li>
-  <li><a href="detail.html?id=20">城戸さな</a></li>
-  <li><a href="detail.html?id=21">桃井レイファ</a></li>
-  <li><a href="detail.html?id=22">潮崎なな</a></li>
-  <li><a href="detail.html?id=23">狼神あそぎ</a></li>
-  <li><a href="detail.html?id=24">キャロライン・ベルク</a></li>
-  <li><a href="detail.html?id=25">幸村さち</a></li>
-  <li><a href="detail.html?id=26">仮面クシナ</a></li>
-  <li><a href="detail.html?id=27">葉山りお</a></li>
-  <li><a href="detail.html?id=28">ラブリー玉井</a></li>
-  <li><a href="detail.html?id=29">焔島れい</a></li>
-  <li><a href="detail.html?id=30">剣崎みこ</a></li>
-  <li><a href="detail.html?id=31">大木ゆりあ</a></li>
-  <li><a href="detail.html?id=32">アレクシア・スターク</a></li>
-  <li><a href="detail.html?id=33">虎縞やまと</a></li>
-  <li><a href="detail.html?id=34">黒薔薇アミィ</a></li>
-  <li><a href="detail.html?id=35">グレイス・リン</a></li>
-  <li><a href="detail.html?id=36">黄金の狼</a></li>
-  <li><a href="detail.html?id=37">縞野さとみ</a></li>
-  <li><a href="detail.html?id=38">零崎こと</a></li>
-  <li><a href="detail.html?id=39">川原しほ</a></li>
-  <li><a href="detail.html?id=40">ホーク・エイム</a></li>
-  <li><a href="detail.html?id=41">森下まこと</a></li>
-  <li><a href="detail.html?id=42">帯刀しょうこ</a></li>
-  <li><a href="detail.html?id=43">羽山すずね</a></li>
-  <li><a href="detail.html?id=44">ヴェールK</a></li>
-  <li><a href="detail.html?id=45">夢魔まな</a></li>
-  <li><a href="detail.html?id=46">桜庭ちさと</a></li>
-  <li><a href="detail.html?id=47">真紅みゆき</a></li>
-  <li><a href="detail.html?id=48">スターズ・ユニオン</a></li>
-  <li><a href="detail.html?id=49">光崎ひかる</a></li>
-  <li><a href="detail.html?id=50">雷鳴たつこ</a></li>
-  <li><a href="detail.html?id=51">メーガン・ダレル</a></li>
-  <li><a href="detail.html?id=52">ベラ・タイタン</a></li>
-  <li><a href="detail.html?id=53">レオナ堂島</a></li>
-  <li><a href="detail.html?id=54">柴崎みき</a></li>
-  <li><a href="detail.html?id=55">ジャクリーン・ノヴァ</a></li>
-  <li><a href="detail.html?id=56">ジュリー・カーター</a></li>
-  <li><a href="detail.html?id=57">トランプレディ</a></li>
-  <li><a href="detail.html?id=58">ケリー・ペイジ</a></li>
-  <li><a href="detail.html?id=59">白銀の狼</a></li>
-  <li><a href="detail.html?id=60">リン・チョウ</a></li>
-  <li><a href="detail.html?id=61">堀内みづき</a></li>
-  <li><a href="detail.html?id=62">音速ネコ</a></li>
-  <li><a href="detail.html?id=63">シエラ・ベレス</a></li>
-  <li><a href="detail.html?id=64">クララ・ナイト</a></li>
-  <li><a href="detail.html?id=65">黒星カオス</a></li>
-  <li><a href="detail.html?id=66">カルラ・フローレス</a></li>
-  <li><a href="detail.html?id=67">スパーク・リンガ</a></li>
-  <li><a href="detail.html?id=68">若葉みずほ</a></li>
-  <li><a href="detail.html?id=69">伊吹はるか</a></li>
-  <li><a href="detail.html?id=70">カラス天</a></li>
-  <li><a href="detail.html?id=71">小路かすみ</a></li>
-  <li><a href="detail.html?id=72">セレナ・ライル</a></li>
-  <li><a href="detail.html?id=73">デイジー・クロウ</a></li>
-  <li><a href="detail.html?id=74">リブレ・ソル</a></li>
-  <li><a href="detail.html?id=75">猫田テディ</a></li>
-  <li><a href="detail.html?id=76">沢村レイカ</a></li>
-  <li><a href="detail.html?id=77">海豚はやて</a></li>
-  <li><a href="detail.html?id=78">緑川りな</a></li>
-  <li><a href="detail.html?id=79">狐森まい</a></li>
-  <li><a href="detail.html?id=80">白百合じゅん</a></li>
-  <li><a href="detail.html?id=81">蒼森あず</a></li>
-  <li><a href="detail.html?id=82">ナデジダ・ユン</a></li>
-  <li><a href="detail.html?id=83">瀬名ゆい</a></li>
-  <li><a href="detail.html?id=84">聖夜ノワール</a></li>
-  <li><a href="detail.html?id=85">羽村つぐみ</a></li>
-  <li><a href="detail.html?id=86">ベアトリス・コルテス</a></li>
-  <li><a href="detail.html?id=87">ウサギ爆弾</a></li>
-  <li><a href="detail.html?id=88">豹堂りさ</a></li>
-  <li><a href="detail.html?id=89">霜月むらさき</a></li>
-  <li><a href="detail.html?id=90">艶ヶ谷ビューティ</a></li>
-  <li><a href="detail.html?id=91">幻影薔薇・紅</a></li>
-  <li><a href="detail.html?id=92">幻影薔薇・黄</a></li>
-  <li><a href="detail.html?id=93">
-        <ul>
-</ul>
-        <li><strong>打撃スタイル選手</strong><br>得意技：ローリング・ハイキック、延髄斬り、低空ドロップキック</li>
-        <li><strong>パワースタイル選手</strong><br>得意技：シットダウン・パワーボム、パイルドライバー</li>
-    </ul>
+<header class="topbar"><div class="wrap">
+<a class="brand" href="index.html">いろんなもの<span>制作</span></a>
+<nav class="nav" aria-label="メインナビゲーション"><a href="index.html">ホーム</a><a href="index.html#game">ゲーム紹介</a><a href="ai-president-01.html">AIプレイ日記</a></nav>
+</div></header>
+<main class="wrap">
+<section class="hero">
+<div class="eyebrow">WRESTLER DIRECTORY / NAME LIST</div>
+<h1>レスラー<span>名鑑</span></h1>
+<p class="lede">『女子プロレスシミュレーター』に登場するレスラーの名前を、登録番号順にまとめました。番号や名前で検索できます。</p>
+<div class="overview"><div class="total"><span>登録レスラー</span><strong>135名</strong></div><p class="note">掲載内容は名前と番号のみ。<br>3Dモデルやプロフィールは、改修に合わせて今後追加できます。</p></div>
+</section>
+<section class="tools" aria-label="検索と絞り込み">
+<label for="roster-search">名前・登録番号を検索</label>
+<div class="search-wrap"><span class="search-icon" aria-hidden="true">⌕</span><input id="roster-search" type="search" placeholder="例：雲雀、村雨、119、KAEDE" autocomplete="off" spellcheck="false" aria-controls="roster-list"><button type="button" class="clear" id="clear-search" aria-label="検索をクリア">クリア</button></div>
+<div class="ranges" aria-label="番号範囲で絞り込み"><button class="range-btn active" type="button" data-range="all" aria-pressed="true">すべて</button><button class="range-btn" type="button" data-range="1-20" aria-pressed="false">001–020</button><button class="range-btn" type="button" data-range="21-40" aria-pressed="false">021–040</button><button class="range-btn" type="button" data-range="41-60" aria-pressed="false">041–060</button><button class="range-btn" type="button" data-range="61-80" aria-pressed="false">061–080</button><button class="range-btn" type="button" data-range="81-100" aria-pressed="false">081–100</button><button class="range-btn" type="button" data-range="101-120" aria-pressed="false">101–120</button><button class="range-btn" type="button" data-range="121-135" aria-pressed="false">121–135</button></div>
+</section>
+<div class="resultbar" aria-live="polite"><span>表示中：<strong id="visible-count">135</strong> / 135名</span><a href="#roster-list">一覧を見る ↓</a></div>
+<div id="roster-list"><section class="group" id="group-001" data-start="1" data-end="20" aria-labelledby="heading-001">
+    <div class="group-title"><h2 id="heading-001">001 <span class="dash">—</span> 020</h2><span class="group-count">20名</span></div>
+    <ol class="people"><li class="person" data-id="001" data-name="青柳ひより"><span class="person-id">001</span><span class="person-name">青柳ひより</span></li><li class="person" data-id="002" data-name="稲葉さやか"><span class="person-id">002</span><span class="person-name">稲葉さやか</span></li><li class="person" data-id="003" data-name="KIRARA"><span class="person-id">003</span><span class="person-name">KIRARA</span></li><li class="person" data-id="004" data-name="サンディ・ショア"><span class="person-id">004</span><span class="person-name">サンディ・ショア</span></li><li class="person" data-id="005" data-name="パロマ・オルテガ"><span class="person-id">005</span><span class="person-name">パロマ・オルテガ</span></li><li class="person" data-id="006" data-name="ニーナ・ヴォルコフ"><span class="person-id">006</span><span class="person-name">ニーナ・ヴォルコフ</span></li><li class="person" data-id="007" data-name="オリビア・クラーク"><span class="person-id">007</span><span class="person-name">オリビア・クラーク</span></li><li class="person" data-id="008" data-name="月詠かなで"><span class="person-id">008</span><span class="person-name">月詠かなで</span></li><li class="person" data-id="009" data-name="水瀬しずく"><span class="person-id">009</span><span class="person-name">水瀬しずく</span></li><li class="person" data-id="010" data-name="ソーサリー千景"><span class="person-id">010</span><span class="person-name">ソーサリー千景</span></li><li class="person" data-id="011" data-name="ブルック・ハイズ"><span class="person-id">011</span><span class="person-name">ブルック・ハイズ</span></li><li class="person" data-id="012" data-name="白妙ことね"><span class="person-id">012</span><span class="person-name">白妙ことね</span></li><li class="person" data-id="013" data-name="豆原りん"><span class="person-id">013</span><span class="person-name">豆原りん</span></li><li class="person" data-id="014" data-name="ヴァイオレット・ムーア"><span class="person-id">014</span><span class="person-name">ヴァイオレット・ムーア</span></li><li class="person" data-id="015" data-name="ロージー・クイン"><span class="person-id">015</span><span class="person-name">ロージー・クイン</span></li><li class="person" data-id="016" data-name="トロル黒鉄"><span class="person-id">016</span><span class="person-name">トロル黒鉄</span></li><li class="person" data-id="017" data-name="天宮しずえ"><span class="person-id">017</span><span class="person-name">天宮しずえ</span></li><li class="person" data-id="018" data-name="穂高ひなた"><span class="person-id">018</span><span class="person-name">穂高ひなた</span></li><li class="person" data-id="019" data-name="朱雀りんね"><span class="person-id">019</span><span class="person-name">朱雀りんね</span></li><li class="person" data-id="020" data-name="宇野あやの"><span class="person-id">020</span><span class="person-name">宇野あやの</span></li></ol>
+  </section><section class="group" id="group-021" data-start="21" data-end="40" aria-labelledby="heading-021">
+    <div class="group-title"><h2 id="heading-021">021 <span class="dash">—</span> 040</h2><span class="group-count">20名</span></div>
+    <ol class="people"><li class="person" data-id="021" data-name="桃井リーファ"><span class="person-id">021</span><span class="person-name">桃井リーファ</span></li><li class="person" data-id="022" data-name="磯辺こなつ"><span class="person-id">022</span><span class="person-name">磯辺こなつ</span></li><li class="person" data-id="023" data-name="パウンド桐生"><span class="person-id">023</span><span class="person-name">パウンド桐生</span></li><li class="person" data-id="024" data-name="キャロライン・ベルク"><span class="person-id">024</span><span class="person-name">キャロライン・ベルク</span></li><li class="person" data-id="025" data-name="雪村みのり"><span class="person-id">025</span><span class="person-name">雪村みのり</span></li><li class="person" data-id="026" data-name="ホムラ鳴海"><span class="person-id">026</span><span class="person-name">ホムラ鳴海</span></li><li class="person" data-id="027" data-name="葉山まお"><span class="person-id">027</span><span class="person-name">葉山まお</span></li><li class="person" data-id="028" data-name="ラブリー桃園"><span class="person-id">028</span><span class="person-name">ラブリー桃園</span></li><li class="person" data-id="029" data-name="焔堂かれん"><span class="person-id">029</span><span class="person-name">焔堂かれん</span></li><li class="person" data-id="030" data-name="剣持ひさめ"><span class="person-id">030</span><span class="person-name">剣持ひさめ</span></li><li class="person" data-id="031" data-name="大石えりか"><span class="person-id">031</span><span class="person-name">大石えりか</span></li><li class="person" data-id="032" data-name="アレクシア・スターク"><span class="person-id">032</span><span class="person-name">アレクシア・スターク</span></li><li class="person" data-id="033" data-name="タイガー権藤"><span class="person-id">033</span><span class="person-name">タイガー権藤</span></li><li class="person" data-id="034" data-name="黒川せいら"><span class="person-id">034</span><span class="person-name">黒川せいら</span></li><li class="person" data-id="035" data-name="アイリス・チェン"><span class="person-id">035</span><span class="person-name">アイリス・チェン</span></li><li class="person" data-id="036" data-name="ソル・ウルフ"><span class="person-id">036</span><span class="person-name">ソル・ウルフ</span></li><li class="person" data-id="037" data-name="宇佐見ほのか"><span class="person-id">037</span><span class="person-name">宇佐見ほのか</span></li><li class="person" data-id="038" data-name="神崎ゆら"><span class="person-id">038</span><span class="person-name">神崎ゆら</span></li><li class="person" data-id="039" data-name="藤枝ちひろ"><span class="person-id">039</span><span class="person-name">藤枝ちひろ</span></li><li class="person" data-id="040" data-name="ホーク・エイム"><span class="person-id">040</span><span class="person-name">ホーク・エイム</span></li></ol>
+  </section><section class="group" id="group-041" data-start="41" data-end="60" aria-labelledby="heading-041">
+    <div class="group-title"><h2 id="heading-041">041 <span class="dash">—</span> 060</h2><span class="group-count">20名</span></div>
+    <ol class="people"><li class="person" data-id="041" data-name="森下あかね"><span class="person-id">041</span><span class="person-name">森下あかね</span></li><li class="person" data-id="042" data-name="帯刀さよ"><span class="person-id">042</span><span class="person-name">帯刀さよ</span></li><li class="person" data-id="043" data-name="羽鳥こはる"><span class="person-id">043</span><span class="person-name">羽鳥こはる</span></li><li class="person" data-id="044" data-name="MI-YU"><span class="person-id">044</span><span class="person-name">MI-YU</span></li><li class="person" data-id="045" data-name="ナイトメア黒須"><span class="person-id">045</span><span class="person-name">ナイトメア黒須</span></li><li class="person" data-id="046" data-name="梅田ゆかり"><span class="person-id">046</span><span class="person-name">梅田ゆかり</span></li><li class="person" data-id="047" data-name="葛西のぞみ"><span class="person-id">047</span><span class="person-name">葛西のぞみ</span></li><li class="person" data-id="048" data-name="スターズ・ユニオン"><span class="person-id">048</span><span class="person-name">スターズ・ユニオン</span></li><li class="person" data-id="049" data-name="灯野まひる"><span class="person-id">049</span><span class="person-name">灯野まひる</span></li><li class="person" data-id="050" data-name="ストーム千鶴"><span class="person-id">050</span><span class="person-name">ストーム千鶴</span></li><li class="person" data-id="051" data-name="メーガン・ダレル"><span class="person-id">051</span><span class="person-name">メーガン・ダレル</span></li><li class="person" data-id="052" data-name="ベラ・タイタン"><span class="person-id">052</span><span class="person-name">ベラ・タイタン</span></li><li class="person" data-id="053" data-name="鷲尾アンナ"><span class="person-id">053</span><span class="person-name">鷲尾アンナ</span></li><li class="person" data-id="054" data-name="長谷部まゆ"><span class="person-id">054</span><span class="person-name">長谷部まゆ</span></li><li class="person" data-id="055" data-name="ジャクリーン・ノヴァ"><span class="person-id">055</span><span class="person-name">ジャクリーン・ノヴァ</span></li><li class="person" data-id="056" data-name="ベティ・ローガン"><span class="person-id">056</span><span class="person-name">ベティ・ローガン</span></li><li class="person" data-id="057" data-name="ハーツ・クイーン"><span class="person-id">057</span><span class="person-name">ハーツ・クイーン</span></li><li class="person" data-id="058" data-name="ケリー・ペイジ"><span class="person-id">058</span><span class="person-name">ケリー・ペイジ</span></li><li class="person" data-id="059" data-name="ルナ・ウルフ"><span class="person-id">059</span><span class="person-name">ルナ・ウルフ</span></li><li class="person" data-id="060" data-name="リン・チョウ"><span class="person-id">060</span><span class="person-name">リン・チョウ</span></li></ol>
+  </section><section class="group" id="group-061" data-start="61" data-end="80" aria-labelledby="heading-061">
+    <div class="group-title"><h2 id="heading-061">061 <span class="dash">—</span> 080</h2><span class="group-count">20名</span></div>
+    <ol class="people"><li class="person" data-id="061" data-name="堀内ゆずは"><span class="person-id">061</span><span class="person-name">堀内ゆずは</span></li><li class="person" data-id="062" data-name="マッハリンクス"><span class="person-id">062</span><span class="person-name">マッハリンクス</span></li><li class="person" data-id="063" data-name="ルイーズ・ベルス"><span class="person-id">063</span><span class="person-name">ルイーズ・ベルス</span></li><li class="person" data-id="064" data-name="クララ・ナイト"><span class="person-id">064</span><span class="person-name">クララ・ナイト</span></li><li class="person" data-id="065" data-name="ブラックホール・ネメシス"><span class="person-id">065</span><span class="person-name">ブラックホール・ネメシス</span></li><li class="person" data-id="066" data-name="イザドラ・フローレス"><span class="person-id">066</span><span class="person-name">イザドラ・フローレス</span></li><li class="person" data-id="067" data-name="スパーク・ジェイド"><span class="person-id">067</span><span class="person-name">スパーク・ジェイド</span></li><li class="person" data-id="068" data-name="若葉ことり"><span class="person-id">068</span><span class="person-name">若葉ことり</span></li><li class="person" data-id="069" data-name="風早なぎさ"><span class="person-id">069</span><span class="person-name">風早なぎさ</span></li><li class="person" data-id="070" data-name="エル・クエルボ"><span class="person-id">070</span><span class="person-name">エル・クエルボ</span></li><li class="person" data-id="071" data-name="牧野あやめ"><span class="person-id">071</span><span class="person-name">牧野あやめ</span></li><li class="person" data-id="072" data-name="セレナ・モンティロ"><span class="person-id">072</span><span class="person-name">セレナ・モンティロ</span></li><li class="person" data-id="073" data-name="マーゴ・フィンチ"><span class="person-id">073</span><span class="person-name">マーゴ・フィンチ</span></li><li class="person" data-id="074" data-name="ルス・エストレージャ"><span class="person-id">074</span><span class="person-name">ルス・エストレージャ</span></li><li class="person" data-id="075" data-name="コブラ熊谷"><span class="person-id">075</span><span class="person-name">コブラ熊谷</span></li><li class="person" data-id="076" data-name="村雨ルカ"><span class="person-id">076</span><span class="person-name">村雨ルカ</span></li><li class="person" data-id="077" data-name="オルガ浜名"><span class="person-id">077</span><span class="person-name">オルガ浜名</span></li><li class="person" data-id="078" data-name="緑川さえ"><span class="person-id">078</span><span class="person-name">緑川さえ</span></li><li class="person" data-id="079" data-name="狐森ねね"><span class="person-id">079</span><span class="person-name">狐森ねね</span></li><li class="person" data-id="080" data-name="白井じゅん"><span class="person-id">080</span><span class="person-name">白井じゅん</span></li></ol>
+  </section><section class="group" id="group-081" data-start="81" data-end="100" aria-labelledby="heading-081">
+    <div class="group-title"><h2 id="heading-081">081 <span class="dash">—</span> 100</h2><span class="group-count">20名</span></div>
+    <ol class="people"><li class="person" data-id="081" data-name="蒼井かりん"><span class="person-id">081</span><span class="person-name">蒼井かりん</span></li><li class="person" data-id="082" data-name="ナデジダ・ユン"><span class="person-id">082</span><span class="person-name">ナデジダ・ユン</span></li><li class="person" data-id="083" data-name="千早もえ"><span class="person-id">083</span><span class="person-name">千早もえ</span></li><li class="person" data-id="084" data-name="ミンド藍沢"><span class="person-id">084</span><span class="person-name">ミンド藍沢</span></li><li class="person" data-id="085" data-name="羽田ひびき"><span class="person-id">085</span><span class="person-name">羽田ひびき</span></li><li class="person" data-id="086" data-name="ベアトリズ・コルテス"><span class="person-id">086</span><span class="person-name">ベアトリズ・コルテス</span></li><li class="person" data-id="087" data-name="ラビット・ロケット"><span class="person-id">087</span><span class="person-name">ラビット・ロケット</span></li><li class="person" data-id="088" data-name="ジャガー瑠璃"><span class="person-id">088</span><span class="person-name">ジャガー瑠璃</span></li><li class="person" data-id="089" data-name="霜村あおい"><span class="person-id">089</span><span class="person-name">霜村あおい</span></li><li class="person" data-id="090" data-name="ゴージャス麻布"><span class="person-id">090</span><span class="person-name">ゴージャス麻布</span></li><li class="person" data-id="091" data-name="シャドウリリー1号"><span class="person-id">091</span><span class="person-name">シャドウリリー1号</span></li><li class="person" data-id="092" data-name="シャドウリリー2号"><span class="person-id">092</span><span class="person-name">シャドウリリー2号</span></li><li class="person" data-id="093" data-name="ヴィクセン小町"><span class="person-id">093</span><span class="person-name">ヴィクセン小町</span></li><li class="person" data-id="094" data-name="和泉かなえ"><span class="person-id">094</span><span class="person-name">和泉かなえ</span></li><li class="person" data-id="095" data-name="堂本あかり"><span class="person-id">095</span><span class="person-name">堂本あかり</span></li><li class="person" data-id="096" data-name="メイリン・ツァオ"><span class="person-id">096</span><span class="person-name">メイリン・ツァオ</span></li><li class="person" data-id="097" data-name="サーベル武田"><span class="person-id">097</span><span class="person-name">サーベル武田</span></li><li class="person" data-id="098" data-name="スカジ雪代"><span class="person-id">098</span><span class="person-name">スカジ雪代</span></li><li class="person" data-id="099" data-name="イングリッド・ホルム"><span class="person-id">099</span><span class="person-name">イングリッド・ホルム</span></li><li class="person" data-id="100" data-name="穂積なお"><span class="person-id">100</span><span class="person-name">穂積なお</span></li></ol>
+  </section><section class="group" id="group-101" data-start="101" data-end="120" aria-labelledby="heading-101">
+    <div class="group-title"><h2 id="heading-101">101 <span class="dash">—</span> 120</h2><span class="group-count">20名</span></div>
+    <ol class="people"><li class="person" data-id="101" data-name="天城こよみ"><span class="person-id">101</span><span class="person-name">天城こよみ</span></li><li class="person" data-id="102" data-name="ニトロ大河"><span class="person-id">102</span><span class="person-name">ニトロ大河</span></li><li class="person" data-id="103" data-name="ストロング京香"><span class="person-id">103</span><span class="person-name">ストロング京香</span></li><li class="person" data-id="104" data-name="千堂ほたる"><span class="person-id">104</span><span class="person-name">千堂ほたる</span></li><li class="person" data-id="105" data-name="ラ・ネブリナ"><span class="person-id">105</span><span class="person-name">ラ・ネブリナ</span></li><li class="person" data-id="106" data-name="ミッチー早乙女"><span class="person-id">106</span><span class="person-name">ミッチー早乙女</span></li><li class="person" data-id="107" data-name="プリム・ステージ"><span class="person-id">107</span><span class="person-name">プリム・ステージ</span></li><li class="person" data-id="108" data-name="ヘレナ・グレイ"><span class="person-id">108</span><span class="person-name">ヘレナ・グレイ</span></li><li class="person" data-id="109" data-name="マダム・ヴェネツィア"><span class="person-id">109</span><span class="person-name">マダム・ヴェネツィア</span></li><li class="person" data-id="110" data-name="ジゼル久遠"><span class="person-id">110</span><span class="person-name">ジゼル久遠</span></li><li class="person" data-id="111" data-name="東雲まりえ"><span class="person-id">111</span><span class="person-name">東雲まりえ</span></li><li class="person" data-id="112" data-name="ココ有馬"><span class="person-id">112</span><span class="person-name">ココ有馬</span></li><li class="person" data-id="113" data-name="カミラ・アルス"><span class="person-id">113</span><span class="person-name">カミラ・アルス</span></li><li class="person" data-id="114" data-name="緑野すみれ"><span class="person-id">114</span><span class="person-name">緑野すみれ</span></li><li class="person" data-id="115" data-name="紅林かのん"><span class="person-id">115</span><span class="person-name">紅林かのん</span></li><li class="person" data-id="116" data-name="双川うみ"><span class="person-id">116</span><span class="person-name">双川うみ</span></li><li class="person" data-id="117" data-name="双川そら"><span class="person-id">117</span><span class="person-name">双川そら</span></li><li class="person" data-id="118" data-name="バトラー椿"><span class="person-id">118</span><span class="person-name">バトラー椿</span></li><li class="person" data-id="119" data-name="ハーモニー雲雀"><span class="person-id">119</span><span class="person-name">ハーモニー雲雀</span></li><li class="person" data-id="120" data-name="白浜みさお"><span class="person-id">120</span><span class="person-name">白浜みさお</span></li></ol>
+  </section><section class="group" id="group-121" data-start="121" data-end="135" aria-labelledby="heading-121">
+    <div class="group-title"><h2 id="heading-121">121 <span class="dash">—</span> 135</h2><span class="group-count">15名</span></div>
+    <ol class="people"><li class="person" data-id="121" data-name="剣ヶ崎しぐれ"><span class="person-id">121</span><span class="person-name">剣ヶ崎しぐれ</span></li><li class="person" data-id="122" data-name="九条れんげ"><span class="person-id">122</span><span class="person-name">九条れんげ</span></li><li class="person" data-id="123" data-name="千夏"><span class="person-id">123</span><span class="person-name">千夏</span></li><li class="person" data-id="124" data-name="高峰いぶき"><span class="person-id">124</span><span class="person-name">高峰いぶき</span></li><li class="person" data-id="125" data-name="パク・ソヨン"><span class="person-id">125</span><span class="person-name">パク・ソヨン</span></li><li class="person" data-id="126" data-name="セツナ鳴海"><span class="person-id">126</span><span class="person-name">セツナ鳴海</span></li><li class="person" data-id="127" data-name="ハッピー大和"><span class="person-id">127</span><span class="person-name">ハッピー大和</span></li><li class="person" data-id="128" data-name="KAEDE"><span class="person-id">128</span><span class="person-name">KAEDE</span></li><li class="person" data-id="129" data-name="ペニー・ショット"><span class="person-id">129</span><span class="person-name">ペニー・ショット</span></li><li class="person" data-id="130" data-name="コンテッサ・ヴィオラ"><span class="person-id">130</span><span class="person-name">コンテッサ・ヴィオラ</span></li><li class="person" data-id="131" data-name="ダフネ・ハーロウ"><span class="person-id">131</span><span class="person-name">ダフネ・ハーロウ</span></li><li class="person" data-id="132" data-name="マギー・ピース"><span class="person-id">132</span><span class="person-name">マギー・ピース</span></li><li class="person" data-id="133" data-name="クラウン西園寺"><span class="person-id">133</span><span class="person-name">クラウン西園寺</span></li><li class="person" data-id="134" data-name="ジョイ・フェイ"><span class="person-id">134</span><span class="person-name">ジョイ・フェイ</span></li><li class="person" data-id="135" data-name="花田いちか"><span class="person-id">135</span><span class="person-name">花田いちか</span></li></ol>
+  </section></div>
+<div id="empty" class="empty" hidden>該当するレスラーが見つかりませんでした。<br>別の名前や番号でも検索してみてください。</div>
+<section class="footcta"><p><strong>ゲームもプレイしてみませんか？</strong>選手をスカウトして育成し、自分だけの女子プロレス団体を立ち上げよう。</p><a class="btn" href="https://fusay.itch.io/yomiai-ring-woman-pro" target="_blank" rel="noopener noreferrer">無料体験版を遊ぶ ↗</a></section>
+</main>
+<footer class="footer">いろんなもの制作 · 女子プロレスシミュレーター <a href="index.html">ホームへ戻る</a></footer>
+<script>
+(()=>{
+ const input=document.getElementById('roster-search');
+ const clear=document.getElementById('clear-search');
+ const buttons=[...document.querySelectorAll('.range-btn')];
+ const groups=[...document.querySelectorAll('.group')];
+ const persons=[...document.querySelectorAll('.person')];
+ const count=document.getElementById('visible-count');
+ const empty=document.getElementById('empty');
+ let activeRange='all';
+ const norm=s=>s.normalize('NFKC').toLocaleLowerCase('ja').replace(/[\s・･\-‐‑–—]/g,'');
+ function update(){
+  const q=norm(input.value.trim());
+  let shown=0;
+  for (const p of persons){
+    const n=Number(p.dataset.id);
+    const inRange=activeRange==='all'||(()=>{const [lo,hi]=activeRange.split('-').map(Number);return n>=lo&&n<=hi;})();
+    const hit=!q||norm(p.dataset.name).includes(q)||p.dataset.id.includes(q)||String(n).includes(q);
+    p.hidden=!(inRange&&hit);
+    if(!p.hidden)shown++;
+  }
+  for(const g of groups)g.hidden=![...g.querySelectorAll('.person')].some(p=>!p.hidden);
+  count.textContent=shown;empty.hidden=shown!==0;
+ }
+ input.addEventListener('input',()=>{activeRange='all';setRangeButton();update()});
+ clear.addEventListener('click',()=>{input.value='';activeRange='all';setRangeButton();update();input.focus()});
+ function setRangeButton(){buttons.forEach(b=>{let yes=b.dataset.range===activeRange;b.classList.toggle('active',yes);b.setAttribute('aria-pressed',String(yes))})}
+ buttons.forEach(b=>b.addEventListener('click',()=>{activeRange=b.dataset.range;input.value='';setRangeButton();update()}));
+ update();
+})();
+</script>
 </body>
 </html>
