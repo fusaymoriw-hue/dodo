@@ -100,4 +100,20 @@ a{color:var(--pink2);text-underline-offset:3px}a:hover{color:white}button,a{touc
 <section class="fin"><div class="eyebrow">TO BE CONTINUED?</div><h2>AI社長、初めての女子プロレス経営。<br>第1話、完。</h2><p>採用も練習も、試合結果も予想外。もし自分だったら、どんな団体を作るでしょうか？ 無料体験版はブラウザから遊べます。</p><div class="cta-row"><a class="btn" href="https://plicy.net/GamePlay/240923" target="_blank" rel="noopener noreferrer">🥊 PLiCyで無料体験版を遊ぶ ↗</a><a class="btn secondary" href="https://fusay.itch.io/yomiai-ring-woman-pro" target="_blank" rel="noopener noreferrer">itch.ioで遊ぶ ↗</a><a class="btn secondary" href="index.html">ホームページへ戻る</a></div><p class="fineprint" style="margin:19px 0 0">※「AI社長」はスクリーンショットを見ながら経営方針を決定。クリック操作は開発者が担当しました。画像は実際のゲーム画面です。開発途中の無料体験版のため、仕様は今後変わる可能性があります。</p></section>
 </main>
 <footer class="footer"><div class="wrap">いろんなもの制作 ／ 女子プロレスシミュレーター<br>AI社長プレイ日記・第1話</div></footer>
+<!-- 訪問者カウント（Cloudflare Web Analytics）。?me=on を開いたブラウザは数えない -->
+<script>
+(function(){
+  function note(t){try{var d=document.createElement('div');d.textContent=t;d.style.cssText='position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:99999;background:#1b1c24;color:#fff;border:1px solid #ff9bb8;border-radius:10px;padding:8px 14px;font-size:14px;box-shadow:0 4px 16px rgba(0,0,0,.4)';document.body.appendChild(d);setTimeout(function(){d.remove()},4000);}catch(e){}}
+  try{
+    var p=new URLSearchParams(location.search);
+    if(p.get('me')==='on'){localStorage.setItem('iroiro_me','1');note('このブラウザは、これから数えません');}
+    if(p.get('me')==='off'){localStorage.removeItem('iroiro_me');note('このブラウザも、数えるように戻しました');}
+    if(localStorage.getItem('iroiro_me')==='1')return;
+  }catch(e){}
+  var s=document.createElement('script');s.defer=true;
+  s.src='https://static.cloudflareinsights.com/beacon.min.js';
+  s.setAttribute('data-cf-beacon','{"token": "6be5cbf2537244d6b874b0237da1205b"}');
+  document.body.appendChild(s);
+})();
+</script>
 </body></html>

@@ -22,7 +22,7 @@ p{margin:0 0 10px}ul{margin:4px 0 10px;padding-left:1.3em}li{margin:3px 0}.small
 <p>パーソナライズ広告は、<a href="https://www.google.com/settings/ads" rel="noopener">Google の広告設定</a>で無効にできます。また、<a href="https://www.aboutads.info/choices/" rel="noopener">www.aboutads.info</a> にアクセスすれば、パーソナライズ広告に使われる第三者配信事業者の Cookie を無効にできます。</p>
 <p>Google による Cookie の扱いについては、<a href="https://policies.google.com/technologies/ads?hl=ja" rel="noopener">Google のポリシーと規約（広告）</a>をご覧ください。</p></div>
 <div class="box"><h2>アクセス解析について</h2>
-<p>当サイトでは、サイトの改善のためにアクセス状況を集計することがあります（Cloudflare の解析機能など）。集計されるのは、ページの表示回数や利用している端末の種類などで、個人を特定する情報は含みません。</p></div>
+<p>当サイトでは、サイトの改善のためにアクセス解析（Cloudflare Web Analytics）を使っています。クッキーは使わず、個人を特定する情報は集めていません。集計されるのは、ページの表示回数、どのページから来たか、利用している端末の種類などです。</p></div>
 <div class="box"><h2>ゲームのセーブデータについて</h2>
 <p>当サイトで紹介しているブラウザゲームは、セーブデータや設定を、お使いのブラウザの中（ローカルストレージなど）に保存します。このデータが当サイトや運営者に送られることはありません。ブラウザのデータを消すと、セーブデータも消えます。</p></div>
 <div class="box"><h2>お問い合わせでいただいた情報について</h2>
@@ -37,4 +37,20 @@ p{margin:0 0 10px}ul{margin:4px 0 10px;padding-left:1.3em}li{margin:3px 0}.small
 <div class="box"><h2>このポリシーの変更</h2>
 <p>このポリシーは、必要に応じて予告なく変更することがあります。変更後の内容は、このページに掲載した時点から有効になります。</p>
 <p class="small">制定日：2026年11月10日<br>運営者：いろんなもの制作（<a href="about.html">運営者について</a>）</p></div>
-</main><footer class="footer"><div class="wrap">© いろんなもの制作　｜　掲載のゲーム・キャラクター・団体名はすべて架空のものです。<nav aria-label="サイトのページ"><a href="index.html">トップページ</a><a href="about.html">運営者について</a><a href="privacy.html">プライバシーポリシー</a><a href="contact.html">お問い合わせ</a></nav></div></footer></body></html>
+</main><footer class="footer"><div class="wrap">© いろんなもの制作　｜　掲載のゲーム・キャラクター・団体名はすべて架空のものです。<nav aria-label="サイトのページ"><a href="index.html">トップページ</a><a href="about.html">運営者について</a><a href="privacy.html">プライバシーポリシー</a><a href="contact.html">お問い合わせ</a></nav></div></footer><!-- 訪問者カウント（Cloudflare Web Analytics）。?me=on を開いたブラウザは数えない -->
+<script>
+(function(){
+  function note(t){try{var d=document.createElement('div');d.textContent=t;d.style.cssText='position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:99999;background:#1b1c24;color:#fff;border:1px solid #ff9bb8;border-radius:10px;padding:8px 14px;font-size:14px;box-shadow:0 4px 16px rgba(0,0,0,.4)';document.body.appendChild(d);setTimeout(function(){d.remove()},4000);}catch(e){}}
+  try{
+    var p=new URLSearchParams(location.search);
+    if(p.get('me')==='on'){localStorage.setItem('iroiro_me','1');note('このブラウザは、これから数えません');}
+    if(p.get('me')==='off'){localStorage.removeItem('iroiro_me');note('このブラウザも、数えるように戻しました');}
+    if(localStorage.getItem('iroiro_me')==='1')return;
+  }catch(e){}
+  var s=document.createElement('script');s.defer=true;
+  s.src='https://static.cloudflareinsights.com/beacon.min.js';
+  s.setAttribute('data-cf-beacon','{"token": "6be5cbf2537244d6b874b0237da1205b"}');
+  document.body.appendChild(s);
+})();
+</script>
+</body></html>
