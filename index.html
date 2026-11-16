@@ -82,7 +82,7 @@ h1,h2,h3,h4,p{margin-top:0}
 .feature-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:6px}
 .feature h3{font-size:1.45rem;margin:0;line-height:1.5}.feature h3 span{color:var(--pink)}.feature.v h3 span{color:var(--blue)}
 .feature .lead{color:#d7d2dc;margin:8px 0 20px}
-.points{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.points{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}.points.four{grid-template-columns:repeat(2,1fr)}
 .point{background:var(--panel2);border:1px solid #33343f;border-radius:12px;padding:16px}
 .point i{font-style:normal;font-size:1.4rem}.point h4{margin:6px 0 4px;font-size:.98rem}.point p{margin:0;color:var(--muted);font-size:.86rem;line-height:1.75}
 .gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
@@ -136,7 +136,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer nav a{color:#cfc9d6;t
   .hero{grid-template-columns:1fr;padding-top:36px;gap:28px}
   .stats{grid-template-columns:repeat(2,1fr);margin-bottom:56px}
   .works,.diaries,.soon,.devlog{grid-template-columns:1fr}
-  .points{grid-template-columns:1fr}
+  .points,.points.four{grid-template-columns:1fr}
   .gallery{grid-template-columns:repeat(2,1fr)}
   .feature{padding:20px}
   .topbar .wrap{min-height:54px}.nav{gap:14px}
@@ -272,10 +272,11 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer nav a{color:#cfc9d6;t
     <div class="feature" id="inkwar" style="scroll-margin-top:80px">
       <div class="feature-head"><h3>マス目の上の連鎖パズルバトル<br><span>「インク戦闘員ウォーズ」</span></h3></div>
       <p class="lead">インク団の戦闘員は、インクの体を持つ女の子たち。ヒーローを動かしてアジトを奥へ進み、戦闘員の動きを読んで、まとめてはじけさせましょう。</p>
-      <div class="points">
+      <div class="points four">
         <div class="point"><i>💥</i><h4>連鎖ではじける</h4><p>1人はじけると、となりの子のタンクにインクがかかって、次々に「パーン！」。はじけた子は、あとで元にもどります。</p></div>
         <div class="point"><i>🏰</i><h4>アジト全9層・92ステージ</h4><p>タンク置き場、鏡の回廊、ワープの実験室、ベルトコンベアの工場。層ごとにちがうしかけと、★を集めるお題つき。</p></div>
         <div class="point"><i>🎙️</i><h4>フルボイス・スマホでも</h4><p>ヒーローも戦闘員も、セリフ838行すべてに声つき。戦闘員は3人の声で、子によって声がちがいます。クリックかタップだけで遊べます。</p></div>
+        <div class="point"><i>⚡</i><h4>テンポを選べる</h4><p>戦闘員がひとりずつセリフで反応する「じっくり」と、連鎖がどんどん進む「テンポ重視」。試合の途中でも切りかえられます。</p></div>
       </div>
       <div class="gallery" data-g="i">
         <button type="button"><img src="inkwar-images/kv.webp" alt="インク戦闘員ウォーズ：ヒーローと、手を上げるインク戦闘員たち" loading="lazy"><figcaption>ヒーローと、インク団の戦闘員たち</figcaption></button>
@@ -374,6 +375,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer nav a{color:#cfc9d6;t
       <div class="card">
         <h3>📅 最近のアップデート</h3>
         <ul class="tl">
+          <li><time>2026/11/16</time>インク戦闘員ウォーズ：テンポを選べるようになりました。戦闘員一人ひとりがセリフで反応する「💬 じっくり」と、連鎖を続けて速く見せる「⚡ テンポ重視」。試合の途中でも、右上のボタンで切りかえられます（Ink94）</li>
           <li><time>2026/11/16</time><a href="inkwar-diary-ink94.html">プレイ日記「初見トオル、テンポを選ぶ」</a>（インク戦闘員ウォーズ）を公開</li>
           <li class="v"><time>2026/11/15</time><a href="vtuber-diary-toru-office.html">プレイ日記「トオル事務所、2,352人へ」</a>（VTuber事務所）を公開</li>
           <li><time>2026/11/13</time>インク戦闘員ウォーズ：声をぜんぶ作りなおしました。ヒーローは新しい声に、戦闘員は3人の声に（743セリフ×3人）。仲間の名前を呼ぶ声も、すべて名前ごとの声に（Ink85）</li>
