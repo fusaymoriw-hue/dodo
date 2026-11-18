@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>実況収録ツール（いろんなもの制作）</title>
+<style>
+  :root{
+    --bg:#16161d; --panel:#20202a; --panel2:#2a2a36; --line:#3a3a48;
+    --text:#ececf2; --sub:#a9a9b8; --accent:#ff6fa8; --accent2:#5cc8ff;
+    --ok:#5fd38d; --warn:#ffc857; --bad:#ff6b6b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:"Hiragino Sans","Yu Gothic UI","Meiryo",sans-serif;line-height:1.6}
+  header{padding:18px 24px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+  header h1{margin:0;font-size:22px}
+  header .sub{color:var(--sub);font-size:13px}
+  main{max-width:1180px;margin:0 auto;padding:18px 24px 80px}
+  section{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:16px 0}
+  section h2{margin:0 0 10px;font-size:18px;display:flex;align-items:center;gap:10px}
+  .num{display:inline-flex;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#1a1a1a;font-weight:700;align-items:center;justify-content:center;font-size:15px}
+  .hint{color:var(--sub);font-size:13px;margin:4px 0 10px}
+  button{font:inherit;font-size:15px;border:0;border-radius:8px;padding:9px 16px;cursor:pointer;background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+  button:hover:not(:disabled){filter:brightness(1.15)}
+  button:disabled{opacity:.4;cursor:not-allowed}
+  button.main{background:var(--accent);color:#1a1a1a;border-color:transparent;font-weight:700}
+  button.rec{background:var(--bad);color:#fff;border-color:transparent;font-weight:700}
+  button.blue{background:var(--accent2);color:#10202a;border-color:transparent;font-weight:700}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media (max-width:900px){.grid2{grid-template-columns:1fr}}
+  video{width:100%;background:#000;border-radius:8px;max-height:420px}
+  .status{font-size:14px;color:var(--sub)}
+  .status b{color:var(--text)}
+  .big{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+  .recdot{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--bad);margin-right:6px;animation:blink 1s infinite}
+  @keyframes blink{50%{opacity:.2}}
+  label.set{display:flex;flex-direction:column;gap:2px;font-size:13px;color:var(--sub);min-width:200px}
+  label.set span.v{color:var(--text);font-weight:700}
+  input[type=range]{width:220px}
+  input[type=time],input[type=text],select{font:inherit;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 8px}
+  textarea{width:100%;min-height:160px;font:inherit;font-size:14px;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px}
+  canvas#timeline{width:100%;height:56px;background:#111;border-radius:6px;display:block;cursor:pointer}
+  .legend{display:flex;gap:16px;font-size:12px;color:var(--sub);margin-top:4px}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+  th{color:var(--sub);font-weight:400;font-size:12px}
+  td.t{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tag{font-size:11px;padding:1px 6px;border-radius:4px;background:var(--panel2);color:var(--sub);margin-left:6px}
+  .tag.cut{background:#4a3a20;color:var(--warn)}
+  .progress{height:10px;background:#111;border-radius:5px;overflow:hidden;width:100%;margin-top:6px}
+  .progress>div{height:100%;width:0;background:var(--accent2);transition:width .2s}
+  .box{background:var(--panel2);border-radius:8px;padding:10px 14px;font-size:14px}
+  .msg{margin-top:8px;font-size:14px}
+  .msg.err{color:var(--bad)} .msg.ok{color:var(--ok)}
+  details summary{cursor:pointer;color:var(--sub)}
+  ol.how{margin:6px 0 0 0;padding-left:20px;font-size:14px}
+  ol.how li{margin:2px 0}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎬 実況収録ツール</h1>
+  <span class="sub">ゲーム画面を録画 → 考えている間を自動で詰める → カオルのメモの時刻を合わせる → 動画を書き出す（すべてこのパソコンの中だけで動きます）</span>
+</header>
+<main>
+
+<section>
+  <details open>
+    <summary><b>使い方（はじめての方へ）</b></summary>
+    <ol class="how">
+      <li>このファイルを Chrome か Edge で開きます（ダブルクリック）。カオルが遊ぶゲームは、Claudeアプリの内蔵ブラウザで開いておきます（「⤢」で大きくしておくと見やすい）。</li>
+      <li>「🖥 撮る画面を選ぶ」を押します。内蔵ブラウザは「Chrome タブ」には出てきません。<b>「ウィンドウ」でClaudeアプリ</b>を選ぶか、<b>ゲームの音も録るなら「画面全体」＋「システムの音声も共有」をオン</b>にします。</li>
+      <li><b>初回だけ</b>：「✂ 録る範囲を囲む」でプレビューのゲームの所を囲みます。範囲は覚えておくので、次からは自動で使われます。</li>
+      <li>「● 録画開始」を押して、カオルに「録画開始しました」と送ります。カオルには、思ったことを<b>時刻つきのメモ</b>（例：<code>22:31:05 うわ、連鎖した！</code>）で残してもらいます。</li>
+      <li>終わったら「■ 録画停止」。囲んだ範囲だけの動画が、自動でダウンロードのフォルダに保存されます。</li>
+      <li>その動画とカオルのメモを、対策室のチャットに渡せば、声と字幕を重ねた動画にします。</li>
+    </ol>
+    <p class="hint">②〜④（間を詰める・メモの時刻合わせ・書き出し）は、必要なときだけ使う道具です。ふだんは使わなくてかまいません。別の道具で録った動画も「録った動画を読みこむ」から使えます。</p>
+  </details>
+</section>
+
+<!-- ① 録画 -->
+<section>
+  <h2><span class="num">1</span>録画</h2>
+  <div class="grid2">
+    <div>
+      <div style="position:relative">
+        <video id="live" muted playsinline></video>
+        <canvas id="liveLayer" class="hidden" style="position:absolute;left:0;top:0;width:100%;height:100%;cursor:crosshair"></canvas>
+      </div>
+      <div class="legend" style="margin-top:6px">プレビュー（ここは音が出ません）。緑の四角の中だけが録画されます。</div>
+      <div class="row">
+        <button id="btnLiveCrop" disabled>✂ 録る範囲を囲む</button>
+        <button id="btnLiveCropClear" disabled>全体を録る</button>
+      </div>
+      <div class="hint" id="liveCropInfo" style="margin:0"></div>
+    </div>
+    <div>
+      <div class="box" style="margin-bottom:8px;font-size:14px">
+        <b>ふだんの手順は3つだけ</b>：<br>
+        ① 「撮る画面を選ぶ」（前回と同じ範囲が自動で使われます）<br>
+        ② 「● 録画開始」を押して、カオルに「録画開始しました」と送る<br>
+        ③ 終わったら「■ 録画停止」 → 録画が自動で保存されます
+      </div>
+      <div class="row">
+        <button id="btnPick" class="main">🖥 撮る画面を選ぶ</button>
+        <button id="btnStart" class="rec" disabled>● 録画開始</button>
+        <button id="btnStop" disabled>■ 録画停止</button>
+      </div>
+      <div class="row">
+        <label class="set" style="flex-direction:row;align-items:center;gap:8px;min-width:auto;color:var(--text)">
+          <input type="checkbox" id="autoSave" checked> 停止したら自動で保存する（囲んだ範囲だけの動画）
+        </label>
+      </div>
+      <div class="row">
+        <button id="btnMark" disabled>📍 ここに印（M キー）</button>
+        <span class="hint" style="margin:0">あとで見返したい場面に印を付けられます</span>
+      </div>
+      <div class="box" style="margin-top:10px">
+        <div class="status" id="recState">まだ録画していません</div>
+        <div class="big" id="recTime">00:00</div>
+        <div class="status">録画を始めた時刻：<b id="recClock">—</b></div>
+        <div class="status">画面の動き：<b id="recMotion">—</b></div>
+        <div class="status" style="margin-top:6px">カオルのメモ（最近のもの）：</div>
+        <pre id="liveMemoBox" style="margin:2px 0 0;white-space:pre-wrap;font:inherit;font-size:13px;color:var(--text)"></pre>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <label class="set">画質
+          <select id="quality">
+            <option value="4000000">ふつう（おすすめ）</option>
+            <option value="8000000">きれい（ファイルが大きい）</option>
+            <option value="2000000">軽い（長く録るとき）</option>
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <button id="btnSaveRaw" disabled>💾 録画をもう一度保存</button>
+        <label class="set" style="min-width:auto">
+          <span>または、録った動画を読みこむ</span>
+          <input type="file" id="fileIn" accept="video/*">
+        </label>
+      </div>
+      <p class="hint">長く録るとパソコンの記憶が足りなくなることがあります。1本の録画は30分くらいまでにして、対戦ごとに分けるのがおすすめです。</p>
+      <div id="recMsg" class="msg"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ② カット -->
+<section id="secCut">
+  <h2><span class="num">2</span>考えている間を詰める</h2>
+  <p class="hint"><b>先に、動画の下の「✂ 残す範囲を囲む」でゲームの所を囲んでください。</b>囲んだ所の中だけで動きを見るので、チャットの文字が流れていても「動いている」とは見なしません。そのうえで、画面が止まっていて、しかも声や効果音も鳴っていない時間（カオルが考えている間）だけをカットします。</p>
+  <div id="analyzeBox" class="box hidden">
+    読みこんだ動画を調べています… <span id="anaPct">0%</span>
+    <div class="progress"><div id="anaBar"></div></div>
+  </div>
+  <div class="row">
+    <label class="set">止まっていると見なす動きの小ささ：<span class="v" id="vThr"></span>
+      <input type="range" id="thr" min="0.02" max="3" step="0.02" value="0.2">
+    </label>
+    <label class="set">何秒以上止まったら詰めるか：<span class="v" id="vMin"></span>
+      <input type="range" id="minStill" min="1" max="15" step="0.5" value="4">
+    </label>
+    <label class="set">止まった所に残す長さ（前後それぞれ）：<span class="v" id="vPad"></span>
+      <input type="range" id="pad" min="0" max="3" step="0.1" value="0.8">
+    </label>
+  </div>
+  <div class="row">
+    <label class="set" style="flex-direction:row;align-items:center;gap:8px;min-width:auto">
+      <input type="checkbox" id="useAudio" checked> 声や効果音が鳴っている間は切らない
+    </label>
+    <label class="set">音のしきい値（BGMより大きい音を「鳴っている」とする）：<span class="v" id="vAud"></span>
+      <input type="range" id="audK" min="1.1" max="4" step="0.1" value="1.6">
+    </label>
+    <span class="hint" id="audInfo" style="margin:0"></span>
+  </div>
+  <canvas id="timeline" width="1100" height="56"></canvas>
+  <div class="legend"><span><i style="background:var(--ok)"></i>残す</span><span><i style="background:#444"></i>カット</span><span><i style="background:#5cc8ff"></i>手で戻した所</span><span><i style="background:var(--accent)"></i>印・メモ</span><span>（クリック：その場所から再生／<b>ダブルクリック</b>：そのカットを取り消す・戻す）</span></div>
+  <div class="row"><label class="set" style="flex-direction:row;align-items:center;gap:8px;min-width:auto;color:var(--text)"><input type="checkbox" id="noCut" checked> <b>カットしない（録画をそのまま通しで使う）</b></label><button id="btnKeepReset" disabled>手で戻したカットを元にもどす</button></div>
+  <div class="box" style="margin-top:10px">
+    <span class="status">元の長さ：<b id="lenRaw">—</b>　→　カット後：<b id="lenCut">—</b>　（カット <b id="cutCount">0</b> か所）</span>
+  </div>
+  <div class="grid2" style="margin-top:10px">
+    <div>
+      <div id="playerWrap" style="position:relative">
+        <video id="player" controls playsinline></video>
+        <canvas id="cropLayer" class="hidden" style="position:absolute;left:0;top:0;width:100%;height:100%;cursor:crosshair"></canvas>
+      </div>
+      <div class="row">
+        <button id="btnCrop">✂ 残す範囲を囲む</button>
+        <button id="btnCropClear" disabled>範囲をやめる（全体）</button>
+        <span class="hint" id="cropInfo" style="margin:0">いまは画面全体を使います</span>
+      </div>
+      <p class="hint">ウィンドウや画面全体を録ったときは、ゲームの所だけを囲んでください。書き出す動画は囲んだ所だけになります（チャットの画面やほかのウィンドウが映らないように）。</p>
+    </div>
+    <div>
+      <div class="row">
+        <button id="btnPreview" class="blue" disabled>▶ カット後を見る</button>
+        <button id="btnPreviewStop" disabled>■ 止める</button>
+      </div>
+      <p class="hint">「カット後を見る」は、カットする所を飛ばしながら再生します。テンポが速すぎたら「止まった所に残す長さ」を増やし、まだ間延びしていたら「何秒以上止まったら詰めるか」を減らします。</p>
+      <div class="row">
+        <button id="btnEdl" disabled>📄 カット表（JSON）を保存</button>
+      </div>
+      <p class="hint">カット表は、Claudeの作業場で動画を仕上げるときに使います。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ③ メモ -->
+<section>
+  <h2><span class="num">3</span>カオルのメモ（時刻合わせ）</h2>
+  <p class="hint">カオルのメモを貼りつけます。1行に1つ、行の先頭に時刻（<code>22:31</code> か <code>22:31:05</code>、<code>[22:31:05]</code> でも可）。カット後の動画の何秒目にあたるかを出します。</p>
+  <div class="row">
+    <label class="set" style="min-width:auto">録画を始めた時刻（自動で入ります。読みこんだ動画のときは手で入れてください）
+      <input type="time" id="startClock" step="1">
+    </label>
+  </div>
+  <textarea id="memo" placeholder="22:31:05 はじめまして！ さっそく遊んでみます
+22:32:40 えっ、これどうやって消すの…？
+22:35:12 うわーっ、3連鎖！ 気持ちいい！"></textarea>
+  <div class="box" style="margin:8px 0">
+    <b>ずれを直す（カチンコ合わせ）</b>
+    <div class="hint" style="margin:2px 0 6px">カオルはできごとのあと少し遅れてメモを書くので、数秒ずれることがあります。表の行をクリックして選び、上の動画をその場面（たとえば連鎖した瞬間）に合わせて止めてから「この場面に合わせる」を押すと、全部の行がまとめてずれ直ります。</div>
+    <div class="row" style="margin:0">
+      <button id="btnSync" disabled>🎬 選んだ行を、いま止めている場面に合わせる</button>
+      <label class="set" style="min-width:auto;flex-direction:row;align-items:center;gap:8px">全体のずれ
+        <input type="number" id="offset" value="0" step="0.5" style="width:90px;font:inherit;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:4px 6px"> 秒
+      </label>
+      <span class="hint" id="syncInfo" style="margin:0">行を選んでいません</span>
+    </div>
+  </div>
+  <div class="row">
+    <button id="btnMemo" class="main">時刻を合わせる</button>
+    <button id="btnCsv" disabled>📄 台本の下地（CSV）を保存</button>
+    <button id="btnJson" disabled>📄 台本の下地（JSON）を保存</button>
+  </div>
+  <div id="memoMsg" class="msg"></div>
+  <div style="overflow:auto;max-height:420px;margin-top:8px">
+    <table id="memoTable" class="hidden">
+      <thead><tr><th>カット後</th><th>元の録画</th><th>時刻</th><th>メモ</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ④ 書き出し -->
+<section>
+  <h2><span class="num">4</span>カット済みの動画を書き出す</h2>
+  <p class="hint">カット後の長さと同じくらいの時間がかかります（10分の動画なら約10分）。そのあいだ、このタブを開いたままにしてください（別のタブに切りかえると遅くなることがあります）。</p>
+  <div class="row">
+    <button id="btnRender" class="main" disabled>🎞 書き出し開始</button>
+    <button id="btnRenderStop" disabled>中止</button>
+    <button id="btnSaveCut" disabled>💾 カット済みの動画を保存</button>
+  </div>
+  <div class="progress"><div id="renBar"></div></div>
+  <div id="renMsg" class="msg status"></div>
+  <canvas id="renCanvas" class="hidden"></canvas>
+</section>
+
+</main>
+
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+
+  // ---------- 状態 ----------
+  const S = {
+    stream: null, recorder: null, chunks: [],
+    recStartPerf: 0, recStartDate: null,
+    samples: [],          // {t, d}  t:秒, d:前のコマとの差
+    marks: [],            // {t, text}
+    rawBlob: null, rawUrl: null, duration: 0,
+    segs: [],             // 残す区間 [{s,e}]
+    memoRows: [],
+    cutBlob: null,
+    timerId: 0, sampleId: 0,
+    previewing: false, rendering: false, renderAbort: false,
+  };
+
+  const fmt = (sec, withMs=false) => {
+    if (!isFinite(sec) || sec < 0) sec = 0;
+    const h = Math.floor(sec/3600), m = Math.floor(sec%3600/60), s = sec%60;
+    const ss = withMs ? s.toFixed(1).padStart(4,'0') : String(Math.floor(s)).padStart(2,'0');
+    return (h ? h+':'+String(m).padStart(2,'0') : String(m).padStart(2,'0')) + ':' + ss;
+  };
+  const clockStr = d => d ? d.toTimeString().slice(0,8) : '—';
+  const setMsg = (el, text, cls='') => { el.textContent = text; el.className = 'msg ' + cls; };
+  const download = (blob, name) => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+  };
+  const stamp = () => {
+    const d = new Date(), p = n => String(n).padStart(2,'0');
+    return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}`;
+  };
+  const pickMime = () => {
+    const c = ['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];
+    return c.find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || '';
+  };
+
+  // 小さなキャンバスでコマの差を測る。
+  // 画面を 32×18 のマスに分け、マスごとに「変わった点の数」を記録しておく
+  // （あとで囲んだ範囲の中のマスだけを見て、動いているかを決めるため）
+  const SW = 320, SH = 180, GX = 32, GY = 18, CW = SW/GX, CH = SH/GY;
+  const sc = document.createElement('canvas'); sc.width = SW; sc.height = SH;
+  const sctx = sc.getContext('2d', { willReadFrequently: true });
+  let prevPix = null;
+  const sampleFrame = (videoEl, r) => {
+    if (!videoEl.videoWidth) return null;
+    if (r) sctx.drawImage(videoEl, r.x, r.y, r.w, r.h, 0, 0, SW, SH);
+    else sctx.drawImage(videoEl, 0, 0, SW, SH);
+    const px = sctx.getImageData(0, 0, SW, SH).data;
+    const cells = new Uint16Array(GX*GY);
+    if (prevPix) {
+      for (let y = 0; y < SH; y++) {
+        const cy = (y / CH) | 0;
+        for (let x = 0; x < SW; x++) {
+          const i = (y*SW + x) * 4;
+          const d = Math.abs(px[i]-prevPix[i]) + Math.abs(px[i+1]-prevPix[i+1]) + Math.abs(px[i+2]-prevPix[i+2]);
+          if (d > 30) cells[cy*GX + ((x / CW) | 0)]++;
+        }
+      }
+    }
+    prevPix = new Uint8ClampedArray(px);
+    return cells;
+  };
+  // 囲んだ範囲（なければ全体）の中で、変わった点の割合（％）
+  let cellMask = null;
+  function buildMask() {
+    cellMask = new Uint8Array(GX*GY);
+    const vw = $('player').videoWidth || 1, vh = $('player').videoHeight || 1;
+    const c = S.crop;
+    for (let gy = 0; gy < GY; gy++) for (let gx = 0; gx < GX; gx++) {
+      if (!c) { cellMask[gy*GX+gx] = 1; continue; }
+      const x0 = gx/GX*vw, x1 = (gx+1)/GX*vw, y0 = gy/GY*vh, y1 = (gy+1)/GY*vh;
+      // マスの半分以上が範囲に入っていれば使う
+      const ix = Math.max(0, Math.min(x1, c.x+c.w) - Math.max(x0, c.x));
+      const iy = Math.max(0, Math.min(y1, c.y+c.h) - Math.max(y0, c.y));
+      cellMask[gy*GX+gx] = (ix*iy) >= 0.5*(x1-x0)*(y1-y0) ? 1 : 0;
+    }
+  }
+  function motionOf(cells) {
+    if (!cells) return 0;
+    if (!cellMask) buildMask();
+    let ch = 0, n = 0;
+    for (let i = 0; i < cells.length; i++) if (cellMask[i]) { ch += cells[i]; n++; }
+    return n ? ch / (n * CW * CH) * 100 : 0;
+  }
+
+  // ---------- ① 録画 ----------
+  // ---------- 録る範囲（録画の前に決める。比率で覚えておく） ----------
+  const CROP_KEY = 'jikkyo_live_crop_v1';
+  S.liveCrop = null; // {fx,fy,fw,fh} 0〜1
+  try { const c = JSON.parse(localStorage.getItem(CROP_KEY) || 'null'); if (c && c.fw > 0) S.liveCrop = c; } catch (e) {}
+  const liveLayer = $('liveLayer');
+  let liveCropMode = false, liveDrag = null;
+  const liveRect = () => {
+    const v = $('live'), r = v.getBoundingClientRect();
+    if (!v.videoWidth) return null;
+    const sc2 = Math.min(r.width / v.videoWidth, r.height / v.videoHeight);
+    const w = v.videoWidth * sc2, h = v.videoHeight * sc2;
+    return { left: r.left + (r.width-w)/2, top: r.top + (r.height-h)/2, w, h, boxL: r.left, boxT: r.top };
+  };
+  function drawLiveCrop(tmp) {
+    const r = liveLayer.getBoundingClientRect();
+    liveLayer.width = r.width; liveLayer.height = r.height;
+    const ctx = liveLayer.getContext('2d');
+    ctx.clearRect(0,0,liveLayer.width,liveLayer.height);
+    const vr = liveRect(); const c = tmp || S.liveCrop;
+    if (!vr || !c) return;
+    const x = vr.left-vr.boxL + c.fx*vr.w, y = vr.top-vr.boxT + c.fy*vr.h, w = c.fw*vr.w, h = c.fh*vr.h;
+    ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(0,0,liveLayer.width,liveLayer.height);
+    ctx.clearRect(x,y,w,h);
+    ctx.strokeStyle = '#5fd38d'; ctx.lineWidth = 2; ctx.strokeRect(x,y,w,h);
+  }
+  const liveFrac = e => {
+    const vr = liveRect(); if (!vr) return null;
+    return { x: Math.max(0, Math.min(1, (e.clientX-vr.left)/vr.w)), y: Math.max(0, Math.min(1, (e.clientY-vr.top)/vr.h)) };
+  };
+  function showLiveCropInfo() {
+    if (S.isTab && !liveCropMode) {
+      $('liveCropInfo').textContent = 'タブを録るので、範囲は使いません（タブの中だけが映ります）';
+      liveLayer.classList.add('hidden'); $('btnLiveCropClear').disabled = true; $('btnLiveCrop').disabled = true;
+      return;
+    }
+    $('liveCropInfo').textContent = S.liveCrop
+      ? '緑の四角の中だけを録ります（前回の範囲を覚えています。変えるときは「録る範囲を囲む」）'
+      : 'いまは画面全体を録ります。ゲームの所だけにするなら「録る範囲を囲む」で囲んでください（次から自動で使われます）';
+    $('btnLiveCropClear').disabled = !S.liveCrop;
+    liveLayer.classList.toggle('hidden', !S.liveCrop && !liveCropMode);
+    liveLayer.style.pointerEvents = liveCropMode ? 'auto' : 'none';
+    drawLiveCrop();
+  }
+  $('btnLiveCrop').onclick = () => {
+    liveCropMode = true; liveLayer.classList.remove('hidden'); liveLayer.style.pointerEvents = 'auto';
+    $('liveCropInfo').textContent = 'プレビューの上をマウスでなぞって、ゲームの所を囲んでください';
+    drawLiveCrop();
+  };
+  liveLayer.addEventListener('mousedown', e => { if (liveCropMode) liveDrag = liveFrac(e); });
+  liveLayer.addEventListener('mousemove', e => {
+    if (!liveCropMode || !liveDrag) return;
+    const p = liveFrac(e); if (!p) return;
+    drawLiveCrop({ fx: Math.min(liveDrag.x,p.x), fy: Math.min(liveDrag.y,p.y), fw: Math.abs(p.x-liveDrag.x), fh: Math.abs(p.y-liveDrag.y) });
+  });
+  window.addEventListener('mouseup', e => {
+    if (!liveCropMode || !liveDrag) return;
+    const p = liveFrac(e), a0 = liveDrag; liveDrag = null;
+    if (!p) return;
+    const c = { fx: Math.min(a0.x,p.x), fy: Math.min(a0.y,p.y), fw: Math.abs(p.x-a0.x), fh: Math.abs(p.y-a0.y) };
+    if (c.fw < 0.05 || c.fh < 0.05) { $('liveCropInfo').textContent = '範囲が小さすぎます。もう一度なぞってください'; return; }
+    S.liveCrop = c; liveCropMode = false;
+    try { localStorage.setItem(CROP_KEY, JSON.stringify(c)); } catch (e) {}
+    showLiveCropInfo();
+  });
+  $('btnLiveCropClear').onclick = () => {
+    S.liveCrop = null; liveCropMode = false;
+    try { localStorage.removeItem(CROP_KEY); } catch (e) {}
+    showLiveCropInfo();
+  };
+  window.addEventListener('resize', () => drawLiveCrop());
+
+  // 比率 → 画素（偶数にそろえる）
+  const cropPx = (c, W, H) => {
+    let x = Math.round(c.fx*W/2)*2, y = Math.round(c.fy*H/2)*2;
+    let w = Math.floor(c.fw*W/2)*2, h = Math.floor(c.fh*H/2)*2;
+    w = Math.min(w, W - x - (W - x) % 2); h = Math.min(h, H - y - (H - y) % 2);
+    return { x, y, w: Math.max(2,w), h: Math.max(2,h) };
+  };
+
+  // ---------- ① 画面を選ぶ ----------
+  $('btnPick').onclick = async () => {
+    setMsg($('recMsg'), '');
+    if (S.stream) S.stream.getTracks().forEach(t => t.stop());
+    try {
+      S.stream = await navigator.mediaDevices.getDisplayMedia({
+        video: { frameRate: 30 }, audio: true, selfBrowserSurface: 'exclude', systemAudio: 'include',
+      });
+    } catch (e) {
+      setMsg($('recMsg'), '画面を選べませんでした（キャンセルしたか、ブラウザが対応していません。Chrome か Edge で開き直してください）', 'err');
+      return;
+    }
+    const live = $('live');
+    live.srcObject = S.stream; await live.play().catch(()=>{});
+    const hasAudio = S.stream.getAudioTracks().length > 0;
+    const surf = (S.stream.getVideoTracks()[0].getSettings() || {}).displaySurface;
+    S.isTab = surf === 'browser';
+    $('recState').innerHTML = (S.isTab ? 'Chromeのタブを選びました（タブの中だけが映るので、範囲を囲む必要はありません）' : '画面を選びました') + (hasAudio ? '（音あり）' : '（<b style="color:var(--warn)">音なし</b>：音も録るなら「画面全体」＋「システムの音声も共有」で選び直してください）') + '。プレビューを確かめて「● 録画開始」を押してください。';
+    $('btnStart').disabled = false; $('btnLiveCrop').disabled = false;
+    S.stream.getVideoTracks()[0].addEventListener('ended', () => {
+      if (S.recorder && S.recorder.state === 'recording') stopRec();
+      else { $('btnStart').disabled = true; $('recState').textContent = '画面の共有が止まりました。「撮る画面を選ぶ」からやり直してください'; }
+    });
+    setTimeout(showLiveCropInfo, 300);
+  };
+
+  // ---------- ② 録画開始 ----------
+  $('btnStart').onclick = async () => {
+    if (!S.stream) return;
+    resetAll();
+    S.liveMemos = []; $('liveMemoBox').textContent = '';
+    const live = $('live');
+    const hasAudio = S.stream.getAudioTracks().length > 0;
+    const vtrack = S.stream.getVideoTracks()[0];
+    let recStream = S.stream;
+    S.cropPipe = null;
+    S.recCropRect = null;
+    // 範囲があれば、録画の時点で切り取る（あとで書き出しをしなくてよいように）
+    if (S.liveCrop && !S.isTab && window.MediaStreamTrackProcessor && window.MediaStreamTrackGenerator && window.VideoFrame) {
+      try {
+        const proc = new MediaStreamTrackProcessor({ track: vtrack });
+        const gen = new MediaStreamTrackGenerator({ kind: 'video' });
+        const reader = proc.readable.getReader(), writer = gen.writable.getWriter();
+        S.cropPipe = { stop: false };
+        const pipe = S.cropPipe;
+        (async () => {
+          for (;;) {
+            const { value: frame, done } = await reader.read();
+            if (done || pipe.stop) { if (frame) frame.close(); break; }
+            const r = cropPx(S.liveCrop, frame.displayWidth, frame.displayHeight);
+            let out;
+            try { out = new VideoFrame(frame, { visibleRect: { x: r.x, y: r.y, width: r.w, height: r.h } }); }
+            catch (e) { out = null; }
+            frame.close();
+            if (out) { try { await writer.write(out); } catch (e) { out.close(); break; } }
+          }
+          try { writer.close(); } catch (e) {}
+        })();
+        recStream = new MediaStream([gen, ...S.stream.getAudioTracks()]);
+        S.recCropRect = cropPx(S.liveCrop, live.videoWidth, live.videoHeight);
+      } catch (e) {
+        recStream = S.stream; S.cropPipe = null;
+        setMsg($('recMsg'), 'このブラウザでは録画しながら切り取れないので、全体を録ります（あとで②で囲んで書き出せます）', 'err');
+      }
+    }
+    const mime = pickMime();
+    S.chunks = [];
+    S.recorder = new MediaRecorder(recStream, { mimeType: mime || undefined, videoBitsPerSecond: +$('quality').value, audioBitsPerSecond: 128000 });
+    S.recorder.ondataavailable = e => { if (e.data && e.data.size) S.chunks.push(e.data); };
+    S.recorder.onstop = onRecStop;
+    S.recorder.start(1000);
+    S.recStartPerf = performance.now();
+    S.recStartDate = new Date();
+    $('recClock').textContent = clockStr(S.recStartDate);
+    $('startClock').value = clockStr(S.recStartDate);
+    prevPix = null;
+
+    S.timerId = setInterval(() => {
+      $('recTime').textContent = fmt((performance.now()-S.recStartPerf)/1000);
+    }, 250);
+    S.anaCtx = null; let analyser = null, abuf = null;
+    if (hasAudio) {
+      try {
+        S.anaCtx = new AudioContext();
+        const srcA = S.anaCtx.createMediaStreamSource(new MediaStream(S.stream.getAudioTracks()));
+        analyser = S.anaCtx.createAnalyser(); analyser.fftSize = 2048;
+        srcA.connect(analyser);
+        abuf = new Float32Array(analyser.fftSize);
+      } catch (e) { analyser = null; }
+    }
+    S.sampleId = setInterval(() => {
+      const cells = sampleFrame(live, S.recCropRect);
+      if (cells === null) return;
+      let a = null;
+      if (analyser) {
+        analyser.getFloatTimeDomainData(abuf);
+        let s2 = 0; for (let i = 0; i < abuf.length; i++) s2 += abuf[i]*abuf[i];
+        a = Math.sqrt(s2 / abuf.length);
+      }
+      const t = (performance.now()-S.recStartPerf)/1000;
+      S.samples.push({ t, cells, a });
+      cellMask = null;
+      $('recMotion').textContent = motionOf(cells) < +$('thr').value ? '止まっている' : '動いている';
+    }, 250);
+
+    $('recState').innerHTML = '<span class="recdot"></span>録画中' + (hasAudio ? '（音あり）' : '（音なし）') + (S.cropPipe ? '・囲んだ範囲だけ' : '・画面全体') + '。カオルに「録画開始しました」と送ってください。このツールの窓は後ろに隠れていてもかまいません（しまう［最小化］のは避けてください）。';
+    $('btnStart').disabled = true; $('btnPick').disabled = true; $('btnStop').disabled = false; $('btnMark').disabled = false;
+    $('btnLiveCrop').disabled = true; $('btnLiveCropClear').disabled = true;
+  };
+
+  const stopRec = () => {
+    if (S.recorder && S.recorder.state !== 'inactive') S.recorder.stop();
+  };
+  $('btnStop').onclick = stopRec;
+
+  const addMark = () => {
+    if (!S.recorder || S.recorder.state !== 'recording') return;
+    const t = (performance.now()-S.recStartPerf)/1000;
+    S.marks.push({ t, text: '📍 印' });
+    setMsg($('recMsg'), `印を付けました（${fmt(t)}）`, 'ok');
+  };
+  $('btnMark').onclick = addMark;
+  document.addEventListener('keydown', e => {
+    if ((e.key === 'm' || e.key === 'M') && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) addMark();
+  });
+
+  function onRecStop() {
+    clearInterval(S.timerId); clearInterval(S.sampleId);
+    if (S.anaCtx) { S.anaCtx.close().catch(()=>{}); S.anaCtx = null; }
+    const total = (performance.now()-S.recStartPerf)/1000;
+    if (S.cropPipe) S.cropPipe.stop = true;
+    S.stream.getTracks().forEach(t => t.stop());
+    S.stream = null;
+    $('live').srcObject = null;
+    S.rawBlob = new Blob(S.chunks, { type: S.recorder.mimeType || 'video/webm' });
+    $('recState').textContent = `録画しました（${fmt(total)}・${(S.rawBlob.size/1048576).toFixed(0)}MB）`;
+    $('btnStart').disabled = true; $('btnPick').disabled = false; $('btnStop').disabled = true; $('btnMark').disabled = true;
+    $('btnSaveRaw').disabled = false;
+    if ($('autoSave').checked) {
+      const st = stamp();
+      download(S.rawBlob, `実況_録画_${st}.webm`);
+      if (S.liveMemos.length) {
+        const txt = '録画の秒\tメモ\n' + memoText();
+        setTimeout(() => download(new Blob(['\uFEFF' + txt], { type: 'text/plain' }), `実況_メモ_${st}.txt`), 800);
+      }
+      $('recState').textContent += '　→ 自動で保存しました（ダウンロードのフォルダ）';
+    }
+    loadIntoPlayer(S.rawBlob, total);
+  }
+
+  $('btnSaveRaw').onclick = () => {
+    if (S.rawBlob) download(S.rawBlob, `実況_元の録画_${stamp()}.webm`);
+  };
+
+  // 読みこみ
+  $('fileIn').onchange = async (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    resetAll();
+    S.rawBlob = f;
+    S.recStartDate = null;
+    $('recState').textContent = `読みこみました：${f.name}`;
+    $('recClock').textContent = '—（③で手で入れてください）';
+    $('btnSaveRaw').disabled = true;
+    await loadIntoPlayer(f, 0);
+    await analyzeFile();
+  };
+
+  function resetAll() {
+    S.samples = []; S.marks = []; S.segs = []; S.forceKeep = []; S.cuts = []; S.memoRows = []; S.cutBlob = null; S.duration = 0;
+    if (S.rawUrl) { URL.revokeObjectURL(S.rawUrl); S.rawUrl = null; }
+    $('btnSaveCut').disabled = true; $('btnRender').disabled = true;
+    $('btnPreview').disabled = true; $('btnEdl').disabled = true;
+    $('memoTable').classList.add('hidden');
+    $('lenRaw').textContent = '—'; $('lenCut').textContent = '—'; $('cutCount').textContent = '0';
+    $('recTime').textContent = '00:00';
+    drawTimeline();
+  }
+
+  // MediaRecorderの動画は長さが入っていないことがあるので、末尾まで飛ばして長さを確定させる
+  function fixDuration(v) {
+    return new Promise(res => {
+      if (isFinite(v.duration) && v.duration > 0) return res(v.duration);
+      const onT = () => {
+        if (isFinite(v.duration) && v.duration > 0) {
+          v.removeEventListener('timeupdate', onT);
+          v.currentTime = 0;
+          res(v.duration);
+        }
+      };
+      v.addEventListener('timeupdate', onT);
+      v.currentTime = 1e9;
+      setTimeout(() => { v.removeEventListener('timeupdate', onT); res(isFinite(v.duration) ? v.duration : 0); }, 15000);
+    });
+  }
+
+  async function loadIntoPlayer(blob, knownDur) {
+    const p = $('player');
+    S.rawUrl = URL.createObjectURL(blob);
+    p.src = S.rawUrl;
+    await new Promise(r => { p.onloadedmetadata = r; p.onerror = r; });
+    const d = await fixDuration(p);
+    S.duration = d || knownDur || 0;
+    $('lenRaw').textContent = fmt(S.duration);
+    if (S.samples.length) recompute();
+  }
+
+  // 読みこんだ動画を、0.5秒ごとに見て動きを測る
+  async function analyzeFile() {
+    const v = document.createElement('video');
+    v.muted = true; v.src = S.rawUrl; v.preload = 'auto';
+    await new Promise(r => { v.onloadedmetadata = r; v.onerror = r; });
+    const dur = (await fixDuration(v)) || S.duration;
+    if (!dur) { setMsg($('recMsg'), 'この動画は長さがわかりませんでした。別の形式（mp4など）で試してください', 'err'); return; }
+    $('analyzeBox').classList.remove('hidden');
+    prevPix = null;
+    const step = 0.5;
+    const seek = t => new Promise(r => { const f = () => { v.removeEventListener('seeked', f); r(); }; v.addEventListener('seeked', f); v.currentTime = t; });
+    for (let t = 0; t < dur; t += step) {
+      await seek(t);
+      const cells = sampleFrame(v);
+      S.samples.push({ t, cells, a: null });
+      if ((t/step) % 20 === 0) {
+        const pct = Math.round(t/dur*100);
+        $('anaPct').textContent = pct + '%'; $('anaBar').style.width = pct + '%';
+        await new Promise(r => setTimeout(r, 0));
+      }
+    }
+    $('analyzeBox').classList.add('hidden');
+    S.duration = dur;
+    recompute();
+  }
+
+  // ---------- ② カットの計算 ----------
+  ['thr','minStill','pad','audK'].forEach(id => $(id).addEventListener('input', () => { showVals(); recompute(); }));
+  ['useAudio','noCut'].forEach(id => $(id).addEventListener('change', recompute));
+  function showVals() {
+    $('vThr').textContent = (+$('thr').value).toFixed(2) + '%';
+    $('vMin').textContent = (+$('minStill').value).toFixed(1) + '秒';
+    $('vPad').textContent = (+$('pad').value).toFixed(1) + '秒';
+    $('vAud').textContent = '×' + (+$('audK').value).toFixed(1);
+  }
+  showVals();
+
+  S.forceKeep = []; // 手で戻したカット [{s,e}]
+  S.cuts = [];
+  function audioThreshold() {
+    const vals = S.samples.map(x => x.a).filter(x => x !== null && x !== undefined).sort((x,y) => x-y);
+    if (vals.length < 8) return null;
+    const floor = vals[Math.floor(vals.length*0.3)]; // いちばん静かな所＝BGMくらいの大きさ
+    return floor * (+$('audK').value) + 0.003;
+  }
+
+  function recompute() {
+    const dur = S.duration || (S.samples.length ? S.samples[S.samples.length-1].t : 0);
+    if (!dur || !S.samples.length) { drawTimeline(); return; }
+    buildMask();
+    const noCut = $('noCut').checked;
+    const thr = +$('thr').value, minStill = +$('minStill').value, pad = +$('pad').value;
+    const useAud = $('useAudio').checked;
+    const aThr = useAud ? audioThreshold() : null;
+    $('audInfo').textContent = !useAud ? '' : (aThr === null ? '（この動画は音の記録がないので、画面の動きだけで決めます）' : '');
+    const cuts = [];
+    if (!noCut) {
+      let runStart = null;
+      for (let i = 0; i < S.samples.length; i++) {
+        const sm = S.samples[i];
+        const t = sm.t;
+        const loud = aThr !== null && sm.a !== null && sm.a > aThr;
+        const still = motionOf(sm.cells) < thr && !loud;
+        if (still && runStart === null) runStart = (i > 0 ? S.samples[i-1].t : t);
+        if ((!still || i === S.samples.length-1) && runStart !== null) {
+          const runEnd = still ? dur : t;
+          if (runEnd - runStart >= minStill) {
+            const cs = runStart + pad, ce = runEnd - pad;
+            const kept = S.forceKeep.some(k => k.s < ce && k.e > cs);
+            if (ce - cs > 0.3 && !kept) cuts.push({ s: cs, e: ce });
+          }
+          runStart = null;
+        }
+      }
+    }
+    S.cuts = cuts;
+    const segs = [];
+    let cur = 0;
+    for (const c of cuts) {
+      if (c.s > cur + 0.05) segs.push({ s: cur, e: c.s });
+      cur = c.e;
+    }
+    if (dur > cur + 0.05) segs.push({ s: cur, e: dur });
+    S.segs = segs;
+    const kept = segs.reduce((x, g) => x + (g.e - g.s), 0);
+    $('lenRaw').textContent = fmt(dur);
+    $('lenCut').textContent = fmt(kept);
+    $('cutCount').textContent = cuts.length;
+    $('btnPreview').disabled = !segs.length;
+    $('btnEdl').disabled = !segs.length;
+    $('btnRender').disabled = !segs.length || S.rendering;
+    $('btnKeepReset').disabled = !S.forceKeep.length;
+    drawTimeline();
+    if (S.memoRows.length) mapMemo();
+  }
+
+  function drawTimeline() {
+    const c = $('timeline'), ctx = c.getContext('2d');
+    const W = c.width, H = c.height;
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = '#444'; ctx.fillRect(0, 14, W, H-28);
+    const dur = S.duration;
+    if (!dur) return;
+    ctx.fillStyle = '#5fd38d';
+    for (const g of S.segs) ctx.fillRect(g.s/dur*W, 14, Math.max(1,(g.e-g.s)/dur*W), H-28);
+    ctx.fillStyle = '#5cc8ff';
+    for (const k of S.forceKeep) ctx.fillRect(k.s/dur*W, H-20, Math.max(2,(k.e-k.s)/dur*W), 6);
+    // 動きのグラフ（細い線）
+    ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.beginPath();
+    const maxD = Math.max(1, (+$('thr').value) * 6);
+    S.samples.forEach((p,i) => {
+      const x = p.t/dur*W, y = H-14 - Math.min(motionOf(p.cells), maxD)/maxD*(H-28);
+      i ? ctx.lineTo(x,y) : ctx.moveTo(x,y);
+    });
+    ctx.stroke();
+    ctx.fillStyle = '#ff6fa8';
+    const pins = S.marks.map(m => m.t).concat(S.memoRows.filter(r => r.orig !== null).map(r => r.orig));
+    for (const t of pins) ctx.fillRect(t/dur*W - 1, 0, 2, 14);
+    const p = $('player');
+    if (p.currentTime) { ctx.fillStyle = '#fff'; ctx.fillRect(p.currentTime/dur*W - 1, H-14, 2, 14); }
+  }
+  $('timeline').ondblclick = e => {
+    if (!S.duration) return;
+    const r = e.target.getBoundingClientRect();
+    const t = (e.clientX - r.left)/r.width * S.duration;
+    const ki = S.forceKeep.findIndex(k => t >= k.s && t <= k.e);
+    if (ki >= 0) S.forceKeep.splice(ki, 1);
+    else { const c = S.cuts.find(c => t >= c.s && t <= c.e); if (c) S.forceKeep.push({ s: c.s, e: c.e }); }
+    recompute();
+  };
+  $('btnKeepReset').onclick = () => { S.forceKeep = []; recompute(); };
+  $('timeline').onclick = e => {
+    if (!S.duration) return;
+    const r = e.target.getBoundingClientRect();
+    $('player').currentTime = (e.clientX - r.left)/r.width * S.duration;
+  };
+  $('player').addEventListener('timeupdate', drawTimeline);
+
+  // ---------- 残す範囲（切り取り） ----------
+  S.crop = null; // {x,y,w,h} 動画の画素で
+  const layer = $('cropLayer');
+  let cropMode = false, dragStart = null;
+  const vidRect = () => {
+    // 動画の実際の表示位置（黒帯をのぞく）
+    const p = $('player'), r = p.getBoundingClientRect();
+    const vw = p.videoWidth, vh = p.videoHeight;
+    if (!vw) return null;
+    const s = Math.min(r.width / vw, r.height / vh);
+    const w = vw * s, h = vh * s;
+    return { left: r.left + (r.width - w)/2, top: r.top + (r.height - h)/2, w, h, s, vw, vh, boxL: r.left, boxT: r.top };
+  };
+  function drawCrop(tmp) {
+    const r = layer.getBoundingClientRect();
+    layer.width = r.width; layer.height = r.height;
+    const ctx = layer.getContext('2d');
+    ctx.clearRect(0,0,layer.width,layer.height);
+    const vr = vidRect(); const c = tmp || S.crop;
+    if (!vr || !c) return;
+    const x = vr.left - vr.boxL + c.x*vr.s, y = vr.top - vr.boxT + c.y*vr.s, w = c.w*vr.s, h = c.h*vr.s;
+    ctx.fillStyle = 'rgba(0,0,0,.55)';
+    ctx.fillRect(0,0,layer.width,layer.height);
+    ctx.clearRect(x,y,w,h);
+    ctx.strokeStyle = '#5fd38d'; ctx.lineWidth = 2; ctx.strokeRect(x,y,w,h);
+  }
+  const toVid = (e) => {
+    const vr = vidRect(); if (!vr) return null;
+    return {
+      x: Math.max(0, Math.min(vr.vw, (e.clientX - vr.left) / vr.s)),
+      y: Math.max(0, Math.min(vr.vh, (e.clientY - vr.top) / vr.s)),
+    };
+  };
+  $('btnCrop').onclick = () => {
+    if (!$('player').videoWidth) { $('cropInfo').textContent = '先に録画するか、動画を読みこんでください'; return; }
+    $('player').pause();
+    cropMode = true; layer.classList.remove('hidden'); drawCrop();
+    $('cropInfo').textContent = '動画の上をマウスでなぞって、ゲームの所を囲んでください';
+  };
+  layer.addEventListener('mousedown', e => { if (cropMode) dragStart = toVid(e); });
+  layer.addEventListener('mousemove', e => {
+    if (!cropMode || !dragStart) return;
+    const p = toVid(e); if (!p) return;
+    drawCrop({ x: Math.min(dragStart.x,p.x), y: Math.min(dragStart.y,p.y), w: Math.abs(p.x-dragStart.x), h: Math.abs(p.y-dragStart.y) });
+  });
+  window.addEventListener('mouseup', e => {
+    if (!cropMode || !dragStart) return;
+    const p = toVid(e); const a = dragStart; dragStart = null;
+    if (!p) return;
+    let c = { x: Math.min(a.x,p.x), y: Math.min(a.y,p.y), w: Math.abs(p.x-a.x), h: Math.abs(p.y-a.y) };
+    if (c.w < 40 || c.h < 40) { $('cropInfo').textContent = '範囲が小さすぎます。もう一度なぞってください'; drawCrop(); return; }
+    // 動画にしやすいよう偶数にそろえる
+    c = { x: Math.round(c.x/2)*2, y: Math.round(c.y/2)*2, w: Math.floor(c.w/2)*2, h: Math.floor(c.h/2)*2 };
+    S.crop = c; cropMode = false;
+    drawCrop();
+    $('cropInfo').textContent = `残す範囲：${c.w}×${c.h}（もう一度「残す範囲を囲む」で選び直せます）`;
+    $('btnCropClear').disabled = false;
+    recompute();
+  });
+  $('btnCropClear').onclick = () => {
+    S.crop = null; cropMode = false; layer.classList.add('hidden');
+    $('cropInfo').textContent = 'いまは画面全体を使います'; $('btnCropClear').disabled = true;
+    recompute();
+  };
+  window.addEventListener('resize', () => { if (!layer.classList.contains('hidden')) drawCrop(); });
+  // 範囲を決めたあとは、動画の操作ができるように重ねた層をクリックで通す
+  layer.addEventListener('click', () => { if (!cropMode) layer.style.pointerEvents = 'none'; });
+  $('btnCrop').addEventListener('click', () => { layer.style.pointerEvents = 'auto'; });
+
+  // カット後のプレビュー
+  $('btnPreview').onclick = async () => {
+    const p = $('player');
+    S.previewing = true;
+    $('btnPreview').disabled = true; $('btnPreviewStop').disabled = false;
+    if (!S.segs.length) return;
+    p.currentTime = S.segs[0].s;
+    await p.play().catch(()=>{});
+    const tick = () => {
+      if (!S.previewing) return;
+      const t = p.currentTime;
+      const i = S.segs.findIndex(g => t < g.e);
+      if (i === -1) { stopPreview(); return; }
+      if (t < S.segs[i].s - 0.05) p.currentTime = S.segs[i].s;
+      else if (t >= S.segs[i].e - 0.03) {
+        if (i+1 < S.segs.length) p.currentTime = S.segs[i+1].s; else { stopPreview(); return; }
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+  const stopPreview = () => {
+    S.previewing = false; $('player').pause();
+    $('btnPreview').disabled = !S.segs.length; $('btnPreviewStop').disabled = true;
+  };
+  $('btnPreviewStop').onclick = stopPreview;
+
+  // 元の時刻 → カット後の時刻
+  function toCut(t) {
+    let acc = 0;
+    for (const g of S.segs) {
+      if (t < g.s) return { t: acc, inCut: true };
+      if (t <= g.e) return { t: acc + (t - g.s), inCut: false };
+      acc += g.e - g.s;
+    }
+    return { t: acc, inCut: true };
+  }
+
+  $('btnEdl').onclick = () => {
+    const kept = S.segs.reduce((a,g)=>a+(g.e-g.s),0);
+    const data = {
+      作った日時: new Date().toISOString(),
+      元の長さ秒: +S.duration.toFixed(2),
+      カット後の長さ秒: +kept.toFixed(2),
+      録画開始時刻: $('startClock').value || null,
+      設定: { 動きのしきい値: +$('thr').value, 詰める秒数: +$('minStill').value, 残す余白秒: +$('pad').value },
+      切り取り範囲: S.crop ? { x: S.crop.x, y: S.crop.y, 幅: S.crop.w, 高さ: S.crop.h } : null,
+      残す区間: S.segs.map(g => ({ 始め: +g.s.toFixed(2), 終わり: +g.e.toFixed(2) })),
+      印: S.marks.map(m => ({ 元の秒: +m.t.toFixed(2), カット後の秒: +toCut(m.t).t.toFixed(2) })),
+    };
+    download(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }), `実況_カット表_${stamp()}.json`);
+  };
+
+  // ---------- ③ メモ ----------
+  $('btnMemo').onclick = () => {
+    const base = $('startClock').value;
+    if (!base) { setMsg($('memoMsg'), '「録画を始めた時刻」を入れてください', 'err'); return; }
+    const [bh, bm, bs] = base.split(':').map(Number);
+    const baseSec = bh*3600 + bm*60 + (bs || 0);
+    const rows = [];
+    let skipped = 0;
+    for (const line of $('memo').value.split(/\r?\n/)) {
+      if (!line.trim()) continue;
+      const m = line.match(/^\s*[\[（(]?\s*(\d{1,2})[:：](\d{2})(?:[:：](\d{2}))?\s*[\]）)]?\s*[-－:：]?\s*(.*)$/);
+      if (!m) { skipped++; continue; }
+      let sec = (+m[1])*3600 + (+m[2])*60 + (m[3] ? +m[3] : 0) - baseSec;
+      if (sec < -43200) sec += 86400;  // 日付をまたいだとき
+      rows.push({ clock: `${m[1].padStart(2,'0')}:${m[2]}${m[3] ? ':' + m[3] : ''}`, text: m[4], base: sec, isMark: false });
+    }
+    // 録画中の印も入れる（印はツールが付けたので、ずれ直しの対象にしない）
+    for (const mk of S.marks) rows.push({ clock: '', text: mk.text, base: mk.t, isMark: true });
+    rows.sort((a,b) => a.base - b.base);
+    S.memoRows = rows;
+    S.selRow = -1;
+    $('syncInfo').textContent = '行を選んでいません';
+    mapMemo();
+    setMsg($('memoMsg'), `${rows.length}行を合わせました` + (skipped ? `（時刻のない ${skipped} 行は飛ばしました）` : ''), 'ok');
+  };
+
+  function mapMemo() {
+    const tb = $('memoTable').querySelector('tbody');
+    tb.innerHTML = '';
+    const dur = S.duration;
+    const off = +$('offset').value || 0;
+    S.memoRows.forEach((r, idx) => {
+      r.raw = r.isMark ? r.base : r.base + off;
+      r.orig = (r.raw >= 0 && (!dur || r.raw <= dur + 5)) ? r.raw : null;
+      const c = (r.orig !== null && S.segs.length) ? toCut(r.orig) : null;
+      r.cut = c ? c.t : null; r.inCut = c ? c.inCut : false;
+      const tr = document.createElement('tr');
+      const cutTd = r.orig === null ? '<span class="tag cut">録画の外</span>'
+        : (r.cut === null ? '—' : fmt(r.cut, true) + (r.inCut ? '<span class="tag cut">カットした所</span>' : ''));
+      tr.innerHTML = `<td class="t">${cutTd}</td><td class="t">${r.orig === null ? '—' : fmt(r.orig, true)}</td><td class="t">${r.clock}</td><td></td>`;
+      tr.lastChild.textContent = r.text;
+      tr.style.cursor = 'pointer';
+      if (idx === S.selRow) tr.style.background = 'rgba(255,111,168,.18)';
+      tr.onclick = () => {
+        S.selRow = idx;
+        if (r.orig !== null) $('player').currentTime = r.orig;
+        $('syncInfo').textContent = r.isMark ? '印の行は合わせに使えません（メモの行を選んでください）' : `選んだ行：「${r.text.slice(0,20)}」`;
+        $('btnSync').disabled = r.isMark;
+        mapMemo();
+      };
+      tb.appendChild(tr);
+    });
+    $('memoTable').classList.toggle('hidden', !S.memoRows.length);
+    $('btnCsv').disabled = $('btnJson').disabled = !S.memoRows.length;
+    drawTimeline();
+  }
+
+  // カチンコ合わせ：選んだ行が、いま止めている場面になるように全体をずらす
+  $('btnSync').onclick = () => {
+    const r = S.memoRows[S.selRow];
+    if (!r || r.isMark) return;
+    const target = $('player').currentTime;
+    const off = target - r.base;
+    $('offset').value = off.toFixed(1);
+    mapMemo();
+    setMsg($('memoMsg'), `全体を ${off >= 0 ? '+' : ''}${off.toFixed(1)} 秒ずらしました（「${r.text.slice(0,20)}」＝ ${fmt(target, true)}）`, 'ok');
+  };
+  $('offset').addEventListener('input', () => { if (S.memoRows.length) mapMemo(); });
+
+  const memoExport = () => S.memoRows.map(r => ({
+    カット後の秒: r.cut === null ? null : +r.cut.toFixed(1),
+    元の秒: r.orig === null ? null : +r.orig.toFixed(1),
+    時刻: r.clock, カットした所: !!r.inCut, メモ: r.text,
+  }));
+  $('btnCsv').onclick = () => {
+    const esc = s => `"${String(s ?? '').replace(/"/g,'""')}"`;
+    const lines = ['カット後の秒,元の秒,時刻,カットした所,メモ']
+      .concat(memoExport().map(r => [r.カット後の秒, r.元の秒, r.時刻, r.カットした所 ? 'はい' : '', r.メモ].map(esc).join(',')));
+    download(new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv' }), `実況_台本の下地_${stamp()}.csv`);
+  };
+  $('btnJson').onclick = () => {
+    download(new Blob([JSON.stringify(memoExport(), null, 2)], { type: 'application/json' }), `実況_台本の下地_${stamp()}.json`);
+  };
+
+  // ---------- ④ 書き出し ----------
+  $('btnRender').onclick = async () => {
+    if (!S.segs.length || S.rendering) return;
+    S.rendering = true; S.renderAbort = false; S.cutBlob = null;
+    $('btnRender').disabled = true; $('btnRenderStop').disabled = false; $('btnSaveCut').disabled = true;
+    stopPreview();
+    const total = S.segs.reduce((a,g)=>a+(g.e-g.s),0);
+    try {
+      const v = document.createElement('video');
+      v.src = S.rawUrl; v.preload = 'auto'; v.playsInline = true;
+      await new Promise(r => { v.onloadedmetadata = r; v.onerror = r; });
+      await fixDuration(v);
+      const cvs = $('renCanvas');
+      const cr = S.crop || { x: 0, y: 0, w: v.videoWidth || 1280, h: v.videoHeight || 720 };
+      cvs.width = cr.w; cvs.height = cr.h;
+      const ctx0 = cvs.getContext('2d');
+      const ctx = { drawImage: (img) => ctx0.drawImage(img, cr.x, cr.y, cr.w, cr.h, 0, 0, cr.w, cr.h) };
+      // 音はWebAudio経由（スピーカーには出さない）
+      const actx = new AudioContext();
+      const src = actx.createMediaElementSource(v);
+      const dest = actx.createMediaStreamDestination();
+      src.connect(dest);
+      const out = cvs.captureStream(30);
+      dest.stream.getAudioTracks().forEach(t => out.addTrack(t));
+      const mime = pickMime();
+      const chunks = [];
+      const rec = new MediaRecorder(out, { mimeType: mime || undefined, videoBitsPerSecond: +$('quality').value, audioBitsPerSecond: 128000 });
+      rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+      const stopped = new Promise(r => rec.onstop = r);
+      let drawing = true;
+      const draw = () => { if (!drawing) return; ctx.drawImage(v, 0, 0, cvs.width, cvs.height); requestAnimationFrame(draw); };
+      const seek = t => new Promise(r => { const f = () => { v.removeEventListener('seeked', f); r(); }; v.addEventListener('seeked', f); v.currentTime = t; });
+
+      let done = 0;
+      await seek(S.segs[0].s);
+      ctx.drawImage(v, 0, 0, cvs.width, cvs.height);
+      rec.start(1000);
+      requestAnimationFrame(draw);
+      for (let i = 0; i < S.segs.length; i++) {
+        if (S.renderAbort) break;
+        const g = S.segs[i];
+        if (i > 0) { rec.pause(); await seek(g.s); ctx.drawImage(v,0,0,cvs.width,cvs.height); rec.resume(); }
+        await actx.resume();
+        await v.play();
+        await new Promise(r => {
+          const chk = () => {
+            if (S.renderAbort || v.currentTime >= g.e - 0.02 || v.ended) { v.pause(); r(); return; }
+            const pct = Math.min(100, (done + (v.currentTime - g.s)) / total * 100);
+            $('renBar').style.width = pct.toFixed(1) + '%';
+            $('renMsg').textContent = `書き出し中… ${fmt(done + Math.max(0, v.currentTime - g.s))} / ${fmt(total)}（区間 ${i+1}/${S.segs.length}）`;
+            requestAnimationFrame(chk);
+          };
+          requestAnimationFrame(chk);
+        });
+        done += g.e - g.s;
+      }
+      drawing = false;
+      rec.stop(); await stopped;
+      actx.close();
+      if (S.renderAbort) {
+        $('renMsg').textContent = '中止しました';
+      } else {
+        S.cutBlob = new Blob(chunks, { type: rec.mimeType || 'video/webm' });
+        $('renBar').style.width = '100%';
+        $('renMsg').textContent = `できました（${fmt(total)}・${(S.cutBlob.size/1048576).toFixed(0)}MB）。「カット済みの動画を保存」で保存してください。`;
+        $('btnSaveCut').disabled = false;
+      }
+    } catch (e) {
+      $('renMsg').textContent = '書き出しでエラーが出ました：' + e.message + '（元の録画とカット表を保存して、Claudeの作業場で仕上げることもできます）';
+    }
+    S.rendering = false;
+    $('btnRender').disabled = !S.segs.length; $('btnRenderStop').disabled = true;
+  };
+  $('btnRenderStop').onclick = () => { S.renderAbort = true; };
+  $('btnSaveCut').onclick = () => { if (S.cutBlob) download(S.cutBlob, `実況_カット済み_${stamp()}.webm`); };
+
+  window.addEventListener('beforeunload', e => {
+    if ((S.recorder && S.recorder.state === 'recording') || S.rendering || (S.rawBlob && !S.cutBlob)) { e.preventDefault(); e.returnValue = ''; }
+  });
+
+  // ---------- カオル用の操作口（Claude in Chrome から呼ぶ） ----------
+  // jikkyo.start()  録画開始（作者が「撮る画面を選ぶ」を済ませておくこと）
+  // jikkyo.memo('うわ、連鎖した！')  いまの時刻でメモを残す（録画の秒とぴったり合う）
+  // jikkyo.stop()   録画停止（動画とメモが自動で保存される）
+  // jikkyo.status() いまの様子
+  S.liveMemos = [];
+  const memoText = () => S.liveMemos.map(m => `${fmt(m.t, true)}\t${m.text}`).join('\n');
+  window.jikkyo = {
+    status() {
+      return {
+        画面を選んだ: !!S.stream,
+        録画中: !!(S.recorder && S.recorder.state === 'recording'),
+        経過秒: S.recorder && S.recorder.state === 'recording' ? +((performance.now()-S.recStartPerf)/1000).toFixed(1) : null,
+        範囲: S.liveCrop ? '囲んだ範囲' : '全体',
+        メモの数: S.liveMemos.length,
+      };
+    },
+    start() {
+      if (!S.stream) return 'まだ画面が選ばれていません。作者に「撮る画面を選ぶ」を押してもらってください。';
+      if (S.recorder && S.recorder.state === 'recording') return 'もう録画中です。';
+      $('btnStart').click();
+      return '録画を始めました。';
+    },
+    memo(text) {
+      if (!(S.recorder && S.recorder.state === 'recording')) return '録画中ではないので、メモは残せません。';
+      const t = (performance.now()-S.recStartPerf)/1000;
+      S.liveMemos.push({ t, text: String(text) });
+      S.marks.push({ t, text: String(text) });
+      $('liveMemoBox').textContent = memoText().split('\n').slice(-6).join('\n');
+      return `メモしました（${fmt(t, true)}）`;
+    },
+    stop() {
+      if (!(S.recorder && S.recorder.state === 'recording')) return '録画中ではありません。';
+      stopRec();
+      return '録画を止めました。動画とメモを保存します。';
+    },
+  };
+
+  drawTimeline();
+})();
+</script>
+</body>
+</html>
